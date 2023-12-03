@@ -1,4 +1,4 @@
-package seer
+package mirante
 
 import scalafx.Includes._
 import scalafx.application.JFXApp3
@@ -17,14 +17,14 @@ object App extends JFXApp3:
   type JavaColor = javafx.scene.paint.Paint
   override def start(): Unit =
     stage = new JFXApp3.PrimaryStage:
-      title = "seer"
+      title = "mirante"
       scene = new Scene:
         fill = Color.rgb(38, 38, 38)
         content = new HBox:
           padding = Insets(50, 80, 50, 80)
           children = Seq(
             new Text:
-              text = "seer"
+              text = "mirante"
               style = "-fx-font: normal bold 40pt sans-serif"
               fill = new LinearGradient(endX = 0, stops = Stops(Purple, White))
             ,

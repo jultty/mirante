@@ -1,3 +1,3 @@
-## seer
+## mirante
 
-Sistema Educacional de Estudo e Recomendação
+Sistema educacional orientado a dados
