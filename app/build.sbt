@@ -5,16 +5,22 @@ lazy val root = project
   .settings(
     name := "mirante",
     version := "0.1.0",
+    scalaVersion := scala3Version,
 
     logLevel := Level.Warn,
     watchLogLevel := Level.Warn,
     watchBeforeCommand := Watch.clearScreen,
-    scalaVersion := scala3Version,
-    fork := true,
     Global / cancelable := true,
 
     libraryDependencies ++= Seq(
-    "org.scalameta" %% "munit" % "0.7.29" % Test, 
-      "org.scalafx" %% "scalafx" % "21.0.0-R32",
+      "org.scalameta" %% "munit" % "0.7.29" % Test, 
     ),
+
+  )
+.enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion),
+    buildInfoPackage := "build",
+    buildInfoObject := "Info",
+    buildInfoOptions += BuildInfoOption.BuildTime,
   )
