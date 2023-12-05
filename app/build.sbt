@@ -1,4 +1,6 @@
 val scala3Version = "3.3.1"
+val http4sVersion = "0.23.24"
+val slickVersion = "3.5.0-M5"
 
 lazy val root = project
   .in(file("."))
@@ -13,7 +15,12 @@ lazy val root = project
     Global / cancelable := true,
 
     libraryDependencies ++= Seq(
-      "org.scalameta" %% "munit" % "0.7.29" % Test, 
+      "org.http4s" %% "http4s-ember-client" % http4sVersion,
+      "org.http4s" %% "http4s-ember-server" % http4sVersion,
+      "org.http4s" %% "http4s-dsl"          % http4sVersion,
+      "com.typesafe.slick" %% "slick"       % slickVersion,
+      "org.slf4j" % "slf4j-nop"             % "1.7.26",
+      "org.scalameta" %% "munit"            % "0.7.29" % Test, 
     ),
 
   )
