@@ -17,12 +17,19 @@ def hello_json(name: String): Json =
 case class Hello(name: String)
 case class User(name: String)
 
+implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
+
 object Main extends IOApp {
   val hello = HttpRoutes.of[IO] {
     case GET -> Root / "hello" / name =>
       Ok(hello_json(name))
     case GET -> Root / "user" / name =>
       Ok(User(name).asJson)
+    case req @ POST -> Root / "hello" =>
+      for {
+        user <- req.as[User]
+        resp <- Ok(Hello(user.name).asJson)
+      } yield (resp)
   }.orNotFound
 
   def run(args: List[String]): IO[ExitCode] =
@@ -30,7 +37,7 @@ object Main extends IOApp {
     EmberServerBuilder
       .default[IO]
       .withHost(ipv4"0.0.0.0")
-      .withPort(port"8080")
+      .withPort(port"6060")
       .withHttpApp(hello)
       .build
       .use(_ => IO.never)
