@@ -1,14 +1,21 @@
+import cats.effect._
+import cats.effect.unsafe.implicits.global
 import org.http4s._
 import org.http4s.dsl.io._
 import org.http4s.implicits._
+import org.http4s.circe._
 import org.http4s.ember.server._
-import cats.effect._
+import io.circe._
+import io.circe.literal._
 import com.comcast.ip4s._
+
+def hello_json(name: String): Json =
+  json"""{"hello": $name}"""
 
 object Main extends IOApp {
   val hello = HttpRoutes.of[IO] {
     case GET -> Root / "hello" / name =>
-      Ok(s"Hello, $name.")
+      Ok(hello_json(name))
 }.orNotFound
 
   def run(args: List[String]): IO[ExitCode] =

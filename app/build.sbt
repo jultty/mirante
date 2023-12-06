@@ -18,12 +18,15 @@ lazy val root = project
       "org.http4s" %% "http4s-ember-client" % http4sVersion,
       "org.http4s" %% "http4s-ember-server" % http4sVersion,
       "org.http4s" %% "http4s-dsl"          % http4sVersion,
+      "org.http4s" %% "http4s-circe"        % http4sVersion,
+      "io.circe" %% "circe-generic"         % "0.14.6",
+      "io.circe" %% "circe-literal"         % "0.14.6",
       "com.typesafe.slick" %% "slick"       % slickVersion,
       "org.slf4j" % "slf4j-nop"             % "1.7.26",
       "org.scalameta" %% "munit"            % "0.7.29" % Test, 
     ),
-
   )
+
 .enablePlugins(BuildInfoPlugin)
   .settings(
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion),
