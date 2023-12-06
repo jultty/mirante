@@ -10,25 +10,21 @@ import io.circe.generic.auto._
 import io.circe.syntax._
 import io.circe.literal._
 import com.comcast.ip4s._
+import scala.collection.mutable.ArrayBuffer
 
-def hello_json(name: String): Json =
-  json"""{"hello": $name}"""
+case class Account(name: String, username: String, email: String, password: String)
+implicit val decoder: EntityDecoder[IO, Account] = jsonOf[IO, Account]
 
-case class Hello(name: String)
-case class User(name: String)
-
-implicit val decoder: EntityDecoder[IO, User] = jsonOf[IO, User]
+val accounts = ArrayBuffer.empty[Account]
 
 object Main extends IOApp {
   val hello = HttpRoutes.of[IO] {
     case GET -> Root / "hello" / name =>
-      Ok(hello_json(name))
-    case GET -> Root / "user" / name =>
-      Ok(User(name).asJson)
-    case req @ POST -> Root / "hello" =>
+      Ok(s"Hello, $name")
+    case req @ POST -> Root / "account" =>
       for {
-        user <- req.as[User]
-        resp <- Ok(Hello(user.name).asJson)
+        account <- req.as[Account]
+        resp <- Ok(account.asJson)
       } yield (resp)
   }.orNotFound
 
