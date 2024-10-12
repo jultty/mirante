@@ -8,7 +8,7 @@ ENV POSTGRES_DB=${POSTGRES_DB}
 COPY initdb /docker-entrypoint-initdb.d
 RUN apt-get update -qq \
     && apt-get install -y \
-    build-essential git postgresql-server-dev-all
+    git postgresql-server-dev-all
 RUN cd tmp \
     && git clone https://github.com/michelp/pgjwt \
     && cd pgjwt \
