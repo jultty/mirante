@@ -1,5 +1,5 @@
 -- <secret> must be edited and safely stored before execution
-ALTER DATABASE postgres SET "app.jwt_secret" TO '<jwt-secret>';
+ALTER DATABASE mirante SET "app.jwt_secret" TO '<jwt-secret>';
 
 create schema security;
 

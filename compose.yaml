@@ -1,8 +1,10 @@
 services:
   db:
-    image: postgres:17
-    container_name: db
+    container_name: mirante-db
     restart: always
+    build:
+      context: .
+      dockerfile: db.Dockerfile
     ports:
       - "5432:5432"
     environment:
@@ -19,6 +21,7 @@ services:
       start_period: 30s
       timeout: 10s
   web:
+    container_name: mirante-api
     restart: always
     image: postgrest/postgrest:v12.2.3
     ports:

@@ -3,23 +3,22 @@ declare
     usr record;
 begin
     insert into security."user" as u
-    (email, password) values ($1, $2, $3)
+    (email, password, role) values ($1, $2, 'base_user')
     returning *
    	into usr;
 
     return json_build_object(
         'me', json_build_object(
-            'id', usr.id,
             'email', usr.email,
             'role', 'base_user'
         ),
-        'token', pgjwt.sign(
+        'token', sign(
             json_build_object(
                 'email', usr.email,
                 'role', usr.role,
                 'exp', extract(epoch from now())::integer + 60*30 -- 60*x where x = minutes
             ),
-            settings.get('jwt_secret')
+            current_setting('app.jwt_secret')
         )
     );
 end
