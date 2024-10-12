@@ -8,9 +8,8 @@ begin
    	into usr;
 
     return json_build_object(
-        'me', json_build_object(
-            'email', usr.email,
-            'role', 'base_user'
+        'user', json_build_object(
+            'email', usr.email
         ),
         'token', sign(
             json_build_object(

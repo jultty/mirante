@@ -38,6 +38,9 @@ create extension pgjwt;
 create function
 security.encrypt_password() returns trigger as $$
 begin
+  if length(new.password) < 8 then
+    raise invalid_password using message = 'Invalid user or password';
+  end if;
   if tg_op = 'INSERT' or new.password <> old.password then
     new.password = crypt(new.password, gen_salt('bf'));
   end if;
