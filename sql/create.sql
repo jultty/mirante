@@ -16,3 +16,4 @@ grant select on mirante.version to anonymous;
 
 -- <secret> must be edited and safely stored before execution
 create role authenticator noinherit login password '<secret>';
+grant anonymous to authenticator;
