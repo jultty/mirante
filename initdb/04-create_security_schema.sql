@@ -33,6 +33,7 @@ create constraint trigger ensure_user_role_exists
   execute procedure security.check_role_exists();
 
 create extension pgcrypto;
+create extension pgjwt;
 
 create function
 security.encrypt_password() returns trigger as $$
@@ -63,35 +64,35 @@ security.user_role(email text, password text) returns name
   $$;
 
 create function get_token(out token text) as $$
-  select mirante.sign(
+  select sign(
     row_to_json(r), current_setting('app.jwt_secret')
   ) as token
   from (
     select
-      'my_role'::text as role,
+      'base_user'::text as role,
       -- 1800 seconds = 30 minutes
       extract(epoch from now())::integer + 1800 as exp
   ) r;
 $$ language sql;
 
 create function
-login(email text, pass text, out token text) as $$
+login(email text, password text, out token text) as $$
 declare
   _role name;
 begin
   select security.user_role(email, password) into _role;
   if _role is null then
-    raise invalid_password using message = 'Invalid email or password';
-  end if
+    raise invalid_password using message = 'Invalid user or password';
+  end if;
 
   select sign(
-    row_to_json(r), current_setting('app.jwt_secret')
-  ) as token from (
-    select _role as role, login.email as email,
-      extract(epoch from now())::integer + 60*30 as exp
-  ) r
-  into token;
-
+      row_to_json(r), current_setting('app.jwt_secret')
+    ) as token
+    from (
+      select _role as role, login.email as email,
+         extract(epoch from now())::integer + 60*60 as exp
+    ) r
+    into token;
 end;
 $$ language plpgsql security definer;
 
