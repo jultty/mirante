@@ -1,0 +1,8 @@
+# postgrest.conf for PostgREST 12.2.3
+# documented at:
+# https://docs.postgrest.org/en/stable/references/configuration.html#file-config
+
+# must be edited prior to execution
+db-uri = "postgres://authenticator:<password>@localhost:5432/postgres"
+db-schemas = "mirante"
+db-anon-role = "anonymous"
