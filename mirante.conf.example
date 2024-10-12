@@ -6,3 +6,4 @@
 db-uri = "postgres://authenticator:<password>@localhost:5432/postgres"
 db-schemas = "mirante"
 db-anon-role = "anonymous"
+server-port = 3031
