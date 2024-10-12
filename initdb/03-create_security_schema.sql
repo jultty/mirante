@@ -70,8 +70,7 @@ create function get_token(out token text) as $$
   from (
     select
       'base_user'::text as role,
-      -- 1800 seconds = 30 minutes
-      extract(epoch from now())::integer + 1800 as exp
+      extract(epoch from now())::integer + 60*30 as exp -- 60*x where x = minutes
   ) r;
 $$ language sql;
 
