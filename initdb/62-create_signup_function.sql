@@ -17,7 +17,7 @@ begin
                 'role', usr.role,
                 'exp', extract(epoch from now())::integer + 60*30 -- 60*x where x = minutes
             ),
-            current_setting('app.jwt_secret')
+            current_setting('app.settings.jwt_secret')
         )
     );
 end

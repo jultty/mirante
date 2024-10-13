@@ -8,9 +8,9 @@ services:
     ports:
       - "5432:5432"
     environment:
+      - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - /var/mirante/data:/var/lib/postgresql/data
       - "./initdb:/docker-entrypoint-initdb.d"
@@ -27,9 +27,10 @@ services:
     ports:
       - "3031:3000"
     environment:
+      - PGRST_JWT_SECRET=${MIRANTE_JWT_SECRET}
       - PGRST_APP_SETTINGS_JWT_SECRET=${MIRANTE_JWT_SECRET}
       - PGRST_DB_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      - PGRST_DB_SCHEMA=mirante
+      - PGRST_DB_SCHEMAS=mirante
       - PGRST_DB_ANON_ROLE=anonymous
     depends_on:
       db:

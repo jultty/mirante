@@ -7,5 +7,5 @@ create role anonymous nologin;
 grant usage on schema mirante to anonymous;
 
 -- <secret> must be edited and safely stored before execution
-create role authenticator noinherit login password '<secret>';
+create role authenticator noinherit nologin;
 grant anonymous to authenticator;

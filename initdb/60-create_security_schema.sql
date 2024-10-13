@@ -1,6 +1,3 @@
--- <secret> must be edited and safely stored before execution
-ALTER DATABASE mirante SET "app.jwt_secret" TO '<jwt-secret>';
-
 create schema security;
 
 create role base_user nologin;
@@ -68,7 +65,7 @@ security.user_role(email text, password text) returns name
 
 create function get_token(out token text) as $$
   select sign(
-    row_to_json(r), current_setting('app.jwt_secret')
+    row_to_json(r), current_setting('app.settings.jwt_secret')
   ) as token
   from (
     select
@@ -84,11 +81,11 @@ declare
 begin
   select security.user_role(email, password) into _role;
   if _role is null then
-    raise invalid_password using message = 'Invalid user or password';
+    raise invalid_password using message = 'Invalid role, user or password';
   end if;
 
   select sign(
-      row_to_json(r), current_setting('app.jwt_secret')
+      row_to_json(r), current_setting('app.settings.jwt_secret')
     ) as token
     from (
       select _role as role, login.email as email,
