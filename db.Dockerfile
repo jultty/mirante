@@ -6,7 +6,7 @@ ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 ENV POSTGRES_DB=${POSTGRES_DB}
 
 COPY initdb /docker-entrypoint-initdb.d
-RUN apt-get update -qq \
+RUN apt-get update \
     && apt-get install -y \
     git postgresql-server-dev-all
 RUN cd tmp \
