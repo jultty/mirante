@@ -23,23 +23,29 @@ Authorization: Bearer {{token}}
 
 HTTP 200
 
-# interator can't read account passwords
-
 # an anonymous user can't read account details
 POST http://localhost:3031/rpc/rgpet
-Authorization: Bearer i{{token}}
 {
   "user_email": "tania@mirante.jutty.dev"
 }
 
 HTTP 401
 
-# # a user other than integrator can't read account details
-# POST http://localhost:3031/rpc/rgpet
-# Authorization: Bearer {{valid_token}}
-# {
-#   "user_email": "tania@mirante.jutty.dev"
-# }
-#
-# HTTP 200
-#
+# a user other than integrator can't read account details
+POST http://localhost:3031/rpc/signup
+{
+    "email": "not_integrator@mirante.jutty.dev",
+    "password": "xyz000000"
+}
+
+HTTP 200
+[Captures]
+not_integrator_token: jsonpath "$.token"
+
+POST http://localhost:3031/rpc/rgpet
+Authorization: Bearer {{not_integrator_token}}
+{
+  "user_email": "tania@mirante.jutty.dev"
+}
+
+HTTP 403
