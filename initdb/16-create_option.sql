@@ -5,5 +5,6 @@ create table mirante.option (
   exercise int references exercise(id) not null,
   content text not null,
   place int,
+  correct boolean not null default false,
   enabled boolean not null default true
 );
