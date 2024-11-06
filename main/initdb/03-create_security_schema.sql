@@ -1,6 +1,12 @@
 create schema security;
 
-create role base_user nologin;
+create role anonymous noinherit nologin nocreatedb nocreaterole nosuperuser;
+grant usage on schema mirante to anonymous;
+
+create role authenticator noinherit nologin nocreatedb nocreaterole nosuperuser;
+grant anonymous to authenticator;
+
+create role base_user noinherit nologin nocreatedb nocreaterole nosuperuser;
 grant base_user to authenticator;
 
 grant usage on schema mirante to base_user;
