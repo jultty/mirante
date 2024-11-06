@@ -8,7 +8,7 @@ POST http://localhost:3031/rpc/signup
 HTTP 200
 [Asserts]
 header "Content-Type" == "application/json; charset=utf-8"
-jsonpath "$.user.email" == "tania@mirante.jutty.dev"
+jsonpath "$.email" == "tania@mirante.jutty.dev"
 jsonpath "$.token" != null
 jsonpath "$.token" matches /.+\..+\..+/
 

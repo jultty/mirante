@@ -69,17 +69,6 @@ security.user_role(email text, password text) returns name
     end;
   $$;
 
-create function get_token(out token text) as $$
-  select sign(
-    row_to_json(r), current_setting('app.settings.jwt_secret')
-  ) as token
-  from (
-    select
-      'base_user'::text as role,
-      extract(epoch from now())::integer + 60*30 as exp -- 60*x where x = minutes
-  ) r;
-$$ language sql;
-
 create function
 login(email text, password text, out token text) as $$
 declare
@@ -94,8 +83,8 @@ begin
       row_to_json(r), current_setting('app.settings.jwt_secret')
     ) as token
     from (
-      select _role as role, login.email as email,
-         extract(epoch from now())::integer + 60*60 as exp
+      select _role as role,
+      extract(epoch from now())::integer + 60*60 as exp
     ) r
     into token;
 end;
@@ -110,10 +99,10 @@ begin
 
     if not exists (select * from pg_roles where rolname = email) then
         execute format('create role %I', email);
+        execute format('grant insert on mirante.course to %I', email);
     else
         raise foreign_key_violation using message = 'Role exists';
     end if;
-
 
     insert into security."user" as u
     (email, password, role) values ($1, $2, $1)
@@ -121,9 +110,7 @@ begin
    	into usr;
 
     return json_build_object(
-        'user', json_build_object(
-            'email', usr.email
-        ),
+        'email', usr.email,
         'token', sign(
             json_build_object(
                 'email', usr.email,
