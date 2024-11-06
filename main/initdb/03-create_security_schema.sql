@@ -1,15 +1,10 @@
 create schema security;
 
-create role anonymous noinherit nologin nocreatedb nocreaterole nosuperuser;
+create role anonymous noinherit;
 grant usage on schema mirante to anonymous;
 
-create role authenticator noinherit nologin nocreatedb nocreaterole nosuperuser;
+create role authenticator noinherit;
 grant anonymous to authenticator;
-
-create role base_user noinherit nologin nocreatedb nocreaterole nosuperuser;
-grant base_user to authenticator;
-
-grant usage on schema mirante to base_user;
 
 create table
 security.user (
@@ -99,7 +94,9 @@ begin
 
     if not exists (select * from pg_roles where rolname = email) then
         execute format('create role %I', email);
+        execute format('grant usage on schema mirante to %I;', email);
         execute format('grant insert on mirante.course to %I', email);
+        execute format('grant %I to authenticator', email);
     else
         raise foreign_key_violation using message = 'Role exists';
     end if;

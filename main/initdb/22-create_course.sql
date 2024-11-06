@@ -9,5 +9,3 @@ create table mirante.course (
   locked boolean not null default false,
   expired boolean not null default false
 );
-
-grant insert on mirante.course to base_user;
