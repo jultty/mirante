@@ -1,6 +1,8 @@
-# mirante
+<img alt="An icon of a lighthouse on a cliff top with two light beams pointing outwards" src="ui/assets/images/icon.png" align="right">
 
-Mirante is a data-oriented system to collect and analyze data related to the teaching-learning process. It can store exercise sets and then transform the data from the responses into meaningful information.
+# Mirante
+
+Mirante is a system to collect and analyze data related to the teaching-learning process. It can store exercise sets and then transform the data from the responses into meaningful information.
 
 ## Usage
 
