@@ -107,8 +107,16 @@ create or replace function signup(email text, password text) returns json as $$
 declare
     usr record;
 begin
+
+    if not exists (select * from pg_roles where rolname = email) then
+        execute format('create role %I', email);
+    else
+        raise foreign_key_violation using message = 'Role exists';
+    end if;
+
+
     insert into security."user" as u
-    (email, password, role) values ($1, $2, 'base_user')
+    (email, password, role) values ($1, $2, $1)
     returning *
    	into usr;
 
