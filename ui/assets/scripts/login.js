@@ -30,7 +30,7 @@ async function login_handler(event) {
   }
 
   sessionStorage.setItem("mirante_credentials", JSON.stringify(credentials))
-  let stored_credentials = JSON.parse(sessionStorage.getItem("mirante_credentials"))
+  const stored_credentials = JSON.parse(sessionStorage.getItem("mirante_credentials"))
   console.log("Stored Email: " + stored_credentials.email)
   console.log("Stored Token: " + stored_credentials.token)
 }
