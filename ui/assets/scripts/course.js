@@ -6,10 +6,11 @@ async function course_creation_handler(event) {
   dialog.innerText = ''
 
   const form_data = Object.fromEntries(new FormData(form));
-  let token = JSON.parse(sessionStorage.getItem("mirante_credentials")).token
+  const stored_credentials = sessionStorage.getItem("mirante_credentials")
+  let token
 
-  console.log('token: ' + token)
-  console.log(form_data)
+  if (stored_credentials)
+    token = JSON.parse(stored_credentials).token
 
   const response = await fetch('http://localhost:3031/course', {
     method: "POST",
@@ -20,14 +21,13 @@ async function course_creation_handler(event) {
     body: JSON.stringify(form_data),
   })
 
-  response_json = await response.json()
-  console.dir(response_json)
+  console.dir(response)
 
   if (response.status == '403') {
     dialog.innerText = 'Permissão negada: ' + response_json.message
     return
   } else if (response.status == '201') {
-    dialog.innerText = 'Curso criado'
+    dialog.innerText = 'Curso criado com sucesso'
   } else {
     dialog.innerText = 'Erro inesperado: ' + response_json.message
   }
