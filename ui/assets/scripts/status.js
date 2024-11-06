@@ -23,7 +23,7 @@ async function setStatus(_) {
   const stored_credentials = sessionStorage.getItem("mirante_credentials")
 
   try {
-    if (stored_credentials == undefined)
+    if (stored_credentials == undefined | stored_credentials == 'undefined')
       status_object.user = '[Não autenticado]'
     else if (stored_credentials) {
       console.log(stored_credentials)

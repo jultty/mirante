@@ -17,13 +17,15 @@ async function sign_up_handler(event) {
 
   response_json = await response.json()
 
-  let credentials
-
   if (response.status == 200 || response.status == 201) {
-    credentials = {
+    const credentials = {
       "email": response_json["user"].email,
       "token": response_json.token,
     }
+    sessionStorage.setItem("mirante_credentials", JSON.stringify(credentials))
+    const stored_credentials = JSON.parse(sessionStorage.getItem("mirante_credentials"))
+    console.log("Stored Email: " + stored_credentials.email)
+    console.log("Stored Token: " + stored_credentials.token)
     dialog.innerText = 'Conta criada com sucesso'
   }
   else if (response.status == 409)
@@ -31,10 +33,6 @@ async function sign_up_handler(event) {
   else
     dialog.innerText = `Erro ${response.status} ao criar conta`
 
-  sessionStorage.setItem("mirante_credentials", JSON.stringify(credentials))
-  let stored_credentials = JSON.parse(sessionStorage.getItem("mirante_credentials"))
-  console.log("Stored Email: " + stored_credentials.email)
-  console.log("Stored Token: " + stored_credentials.token)
 }
 
 form.addEventListener('submit', sign_up_handler)
