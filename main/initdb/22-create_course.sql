@@ -9,8 +9,7 @@ create table mirante.course (
   active boolean not null default true
 );
 
-grant insert on mirante.course to base_user;
-grant select on mirante.course to base_user;
+grant select, insert, update, delete on mirante.course to base_user;
 
 alter table mirante.course enable row level security;
 
