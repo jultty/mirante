@@ -6,6 +6,10 @@ grant usage on schema mirante to anonymous;
 create role authenticator noinherit;
 grant anonymous to authenticator;
 
+create role base_user;
+grant base_user to authenticator;
+grant usage on schema mirante to base_user;
+
 create table
 security.user (
   email     text primary key check ( email ~* '^.+@.+\..+$' ),
@@ -95,9 +99,8 @@ begin
     if not exists (select * from pg_roles where rolname = email) then
         execute format('create role %I', email);
         execute format('grant usage on schema mirante to %I;', email);
-        execute format('grant insert on mirante.course to %I', email);
-        execute format('grant select on mirante.version to %I', email);
         execute format('grant %I to authenticator', email);
+        execute format('grant base_user to %I', email);
     else
         raise foreign_key_violation using message = 'Role exists';
     end if;

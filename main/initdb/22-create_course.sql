@@ -6,5 +6,22 @@ create table mirante.course (
 
   creation_date timestamptz not null default now(),
   creation_user name not null default current_user,
-  active boolean not null default true,
+  active boolean not null default true
 );
+
+grant insert on mirante.course to base_user;
+grant select on mirante.course to base_user;
+
+alter table mirante.course enable row level security;
+
+create policy course_policy_select on mirante.course for select
+using (creation_user = current_user);
+
+create policy course_policy_update on mirante.course for update
+using (creation_user = current_user);
+
+create policy course_policy_delete on mirante.course for delete
+using (creation_user = current_user);
+
+create policy course_policy_insert on mirante.course for insert
+to base_user with check (true);

@@ -13,3 +13,4 @@ insert into mirante.version (tag, deprecated, current, date) values
   ('v0.4.0', false, true, '2024-10-12');
 
 grant select on mirante.version to anonymous;
+grant select on mirante.version to base_user;
