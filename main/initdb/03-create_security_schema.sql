@@ -96,6 +96,7 @@ begin
         execute format('create role %I', email);
         execute format('grant usage on schema mirante to %I;', email);
         execute format('grant insert on mirante.course to %I', email);
+        execute format('grant select on mirante.version to %I', email);
         execute format('grant %I to authenticator', email);
     else
         raise foreign_key_violation using message = 'Role exists';
