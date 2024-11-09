@@ -9,3 +9,8 @@
 input {
   margin-bottom: 10px;
 }
+
+nav ul li {
+  display: inline;
+  margin-left: 20px;
+}
