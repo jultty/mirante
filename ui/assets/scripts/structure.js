@@ -38,6 +38,7 @@ body = document.getElementsByTagName('body')[0]
   let hr = document.createElement('hr')
   let status_dialog = document.createElement('p')
   status_dialog.id = 'status'
+  status_dialog.innerText = 'Conectando...'
   footer.append(hr, status_dialog)
   body.appendChild(footer)
 }
