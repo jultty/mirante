@@ -19,13 +19,19 @@ async function update(_) {
 
   const token = authenticate()
 
-  const response = await fetch('http://localhost:3031/course', {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-  }).then(response => response.json())
+  try {
+    const response = await fetch('http://localhost:3031/course', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    }).then(response => response.json())
+  } catch(error) {
+    console.log(error)
+    dialog.innerText = 'Erro ao obter cursos'
+    return
+  }
 
   response.forEach(course => {
     const new_row = document.createElement('tr')
@@ -48,14 +54,21 @@ async function create(event) {
 
   const token = authenticate()
   const form_data = Object.fromEntries(new FormData(form))
-  const response = await fetch('http://localhost:3031/course', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-    body: JSON.stringify(form_data),
-  })
+
+  try {
+    const response = await fetch('http://localhost:3031/course', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(form_data),
+    })
+  } catch(error) {
+    console.log(error)
+    dialog.innerText = 'Erro na requisição'
+    return
+  }
 
   update()
 

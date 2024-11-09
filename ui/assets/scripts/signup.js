@@ -6,28 +6,41 @@ async function sign_up_handler(event) {
   dialog.innerText = ''
 
   const form_data = Object.fromEntries(new FormData(form));
+  let response_json
 
-  const response = await fetch('http://localhost:3031/rpc/signup', {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(form_data),
-  })
+  try {
 
-  console.log(response)
+    const response = await fetch('http://localhost:3031/rpc/signup', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form_data),
+    })
 
-  response_json = await response.json()
+    response_json = await response.json()
+
+  } catch(error) {
+
+    dialog.innerText = 'Erro na requisição'
+    console.log(error)
+    return
+
+  }
 
   if (response.status == 200 || response.status == 201) {
+
     const credentials = {
       "email": response_json.email,
       "token": response_json.token,
     }
+
     sessionStorage.setItem("mirante_credentials", JSON.stringify(credentials))
     const stored_credentials = JSON.parse(sessionStorage.getItem("mirante_credentials"))
     console.log("Stored Email: " + stored_credentials.email)
     console.log("Stored Token: " + stored_credentials.token)
     dialog.innerText = 'Conta criada com sucesso'
+
   }
+
   else if (response.status == 409)
     dialog.innerText = 'Uma conta com este email já existe'
   else
