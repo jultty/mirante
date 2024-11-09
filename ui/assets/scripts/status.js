@@ -14,7 +14,7 @@ async function setStatus(_) {
     const response = await fetch('http://localhost:3031/version?current=is.true')
     response_json = await response.json()
     status_object.version = "Mirante " + response_json["0"].tag
-  } catch(e) {
+  } catch(error) {
     console.log(error)
     status_object.error = 'Erro de conexão: "' + error + '" com resposta "' + response_json + '"'
   }
