@@ -19,7 +19,7 @@ async function sign_up_handler(event) {
 
   if (response.status == 200 || response.status == 201) {
     const credentials = {
-      "email": response_json["user"].email,
+      "email": response_json.email,
       "token": response_json.token,
     }
     sessionStorage.setItem("mirante_credentials", JSON.stringify(credentials))

@@ -9,7 +9,6 @@ const status_object = {
 async function setStatus(_) {
 
   let response_json
-  let status_text
 
   try {
     const response = await fetch('http://localhost:3031/version?current=is.true')
@@ -38,7 +37,7 @@ async function setStatus(_) {
   if (status_object.error)
     status_element.innerText = ('Erro: ' + status_object.error)
   else if (status_object.user && status_object.version)
-    status_element.innerText = ('Conectado: ' + status_object.user + ' ' + status_object.version)
+    status_element.innerText = ('Conectado: ' + status_object.version + ' ' + status_object.user)
   else if (status_object.version)
     status_element.innerText = ('Conectado: ' + status_object.version)
   else
