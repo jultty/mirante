@@ -43,12 +43,33 @@ async function update(_) {
     const json = await response.json()
 
     json.forEach(course => {
+
       const new_row = document.createElement('tr')
-      const new_cell = document.createElement('td')
-      new_cell.innerText = course.name
-      new_row.appendChild(new_cell)
+
+      const checkbox_cell = document.createElement('td')
+      const checkbox = document.createElement('input')
+      checkbox.type = 'checkbox'
+      checkbox.id = `course_${course.id}_checkbox`
+      checkbox.class = 'course_checkbox'
+      checkbox_cell.appendChild(checkbox)
+      new_row.appendChild(checkbox_cell)
+
+      const text_cell = document.createElement('td')
+      text_cell.innerText = course.name
+      new_row.appendChild(text_cell)
+
+      const edit_cell = document.createElement('td')
+      const edit_button = document.createElement('button')
+      edit_button.innerText = 'Editar'
+      edit_button.class = 'course_edit_button'
+      edit_button.id = `course_${course.id}_edit_button`
+      edit_cell.appendChild(edit_button)
+      new_row.appendChild(edit_cell)
+
       table.appendChild(new_row)
+
     })
+
   } else if (response.status == 401) {
     dialog.innerText = 'Erro ao obter cursos: Não autorizado'
   } else {
@@ -103,3 +124,33 @@ async function create(event) {
 }
 
 form.addEventListener('submit', create)
+
+window.addEventListener('load', () => {
+
+    const header_row = document.createElement('tr')
+
+    const checkbox_header = document.createElement('th')
+    checkbox_header.id = 'checkbox_header'
+    const select_all_checkbox = document.createElement('input')
+    select_all_checkbox.type = 'checkbox'
+    select_all_checkbox.id = 'select_all_checkbox'
+    checkbox_header.appendChild(select_all_checkbox)
+
+    const course_name_header = document.createElement('th')
+    course_name_header.id = 'course_name_header'
+    course_name_header.innerText = 'Nome'
+
+    const edit_header = document.createElement('th')
+    edit_header.id = 'edit_header'
+    edit_header.innerText = 'Editar'
+
+    header_row.append(checkbox_header, course_name_header, edit_header)
+    table.appendChild(header_row)
+
+    const delete_button = document.createElement('button')
+    delete_button.id = 'delete_button'
+    delete_button.innerText = 'Excluir seleção'
+
+    table.after(delete_button)
+
+})
