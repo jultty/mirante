@@ -18,28 +18,42 @@ async function update(_) {
   clearChildren(table.id)
 
   const token = authenticate()
+  let response
 
   try {
-    const response = await fetch('http://localhost:3031/course', {
+
+    response = await fetch('http://localhost:3031/course', {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       },
-    }).then(response => response.json())
+    })
+
   } catch(error) {
+
     console.log(error)
     dialog.innerText = 'Erro ao obter cursos'
     return
+
   }
 
-  response.forEach(course => {
-    const new_row = document.createElement('tr')
-    const new_cell = document.createElement('td')
-    new_cell.innerText = course.name
-    new_row.appendChild(new_cell)
-    table.appendChild(new_row)
-  })
+  if (response.status == 200) {
+
+    const json = await response.json()
+
+    json.forEach(course => {
+      const new_row = document.createElement('tr')
+      const new_cell = document.createElement('td')
+      new_cell.innerText = course.name
+      new_row.appendChild(new_cell)
+      table.appendChild(new_row)
+    })
+  } else if (response.status == 401) {
+    dialog.innerText = 'Erro ao obter cursos: Não autorizado'
+  } else {
+    dialog.innerText = `Erro ${response.status} inesperado ao obter cursos: ${response}`
+  }
 
 }
 
@@ -54,9 +68,10 @@ async function create(event) {
 
   const token = authenticate()
   const form_data = Object.fromEntries(new FormData(form))
+  let response
 
   try {
-    const response = await fetch('http://localhost:3031/course', {
+    response = await fetch('http://localhost:3031/course', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,21 +85,20 @@ async function create(event) {
     return
   }
 
-  update()
+  await update()
 
   if (response) {
-    console.dir(response)
-    response_json = await response.json()
+    console.log(response)
   }
 
-  if (response.status == '403') {
-    dialog.innerText = 'Permissão negada: ' + response_json.message
+  if (response.status == '403' || response.status == '401') {
+    dialog.innerText = 'Permissão negada: '
     return
   } else if (response.status == '201') {
     dialog.innerText = 'Curso criado com sucesso'
     update(event)
   } else {
-    dialog.innerText = 'Erro inesperado: ' + response_json.message
+    dialog.innerText = `Erro ${response.status} inesperado: ${response.statusText}`
   }
 }
 

@@ -6,11 +6,12 @@ async function sign_up_handler(event) {
   dialog.innerText = ''
 
   const form_data = Object.fromEntries(new FormData(form));
+  let response
   let response_json
 
   try {
 
-    const response = await fetch('http://localhost:3031/rpc/signup', {
+    response = await fetch('http://localhost:3031/rpc/signup', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form_data),
