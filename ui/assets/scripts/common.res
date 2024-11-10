@@ -1,5 +1,3 @@
-open Js
-
 type document
 type rec element = { lastElementChild: Js.null<element> }
 
@@ -9,7 +7,7 @@ type rec element = { lastElementChild: Js.null<element> }
 
 let clearChildren = (id: string) => {
   let parent = getElementById(doc, id)
-  while !testAny(parent.lastElementChild) {
+  while !Js.testAny(parent.lastElementChild) {
     removeChild(parent, parent.lastElementChild)
   }
 }
