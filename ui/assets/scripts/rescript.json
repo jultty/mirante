@@ -1,0 +1,17 @@
+{
+  "name": "mirante-ui",
+  "sources": {
+    "dir": ".",
+    "subdirs": false
+  },
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".js",
+  "bsc-flags": ["-open RescriptCore"],
+  "bs-dependencies": ["@rescript/core"],
+  "js-post-build": {
+    "cmd": "./cleanup.sh"
+  }
+}

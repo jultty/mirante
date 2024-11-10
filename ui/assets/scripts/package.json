@@ -1,0 +1,20 @@
+{
+  "name": "mirante-ui",
+  "version": "0.1.0",
+  "description": "Mirante client UI scripts",
+  "scripts": {
+    "res:build": "rescript",
+    "res:clean": "rescript clean",
+    "res:dev": "rescript build -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jultty/mirante.git"
+  },
+  "author": "Juno Takano <juno@jutty.dev>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@rescript/core": "*",
+    "rescript": "*"
+  }
+}
