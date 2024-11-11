@@ -21,12 +21,11 @@ async function sign_up_handler($$event) {
   };
   var response_store = {};
   try {
-    var r = await globalThis.fetch("http://localhost:3031/rpc/signup", post_options);
-    response_store.response = await r.clone();
-    response_store.json = await r.json();
+    var response = await globalThis.fetch("http://localhost:3031/rpc/signup", post_options);
+    response_store.response = await response.clone();
+    response_store.json = await response.json();
     console.log(response_store.response);
     console.log(response_store.json);
-    return ;
   }
   catch (exn){
     console.log({
@@ -34,6 +33,51 @@ async function sign_up_handler($$event) {
           _0: "Erro na requisição"
         });
     dialog.innerText = "Erro na requisição";
+  }
+  try {
+    var response$1 = response_store.response;
+    var response$2 = response$1 !== undefined ? response$1 : ({
+          __client_error: ""
+        });
+    var status = response$2.status;
+    var status$1 = status !== undefined ? status : -1;
+    var json = response_store.json;
+    var json$1 = json !== undefined ? json : ({
+          __client_error: "json function not found while destructuring object"
+        });
+    var email = json$1.email;
+    var email$1 = email !== undefined ? email : (console.log("Email field not found while destructuring"), "");
+    var token = json$1.token;
+    var token$1 = token !== undefined ? token : (console.log("Token field not found while destructuring"), "");
+    var credentials = {
+      email: email$1,
+      token: token$1
+    };
+    var string = JSON.stringify(credentials);
+    var credentials_stringified = string !== undefined ? string : "";
+    console.log("response_store.json:");
+    console.log(json$1);
+    if (status$1 === 400) {
+      dialog.innerText = "Requisição inválida. Os dados informados estão corretos?";
+      return ;
+    } else if (status$1 === 409) {
+      dialog.innerText = "Já existe uma conta com este email";
+      return ;
+    } else if (status$1 === 200 || status$1 === 201) {
+      console.log(JSON.stringify(credentials));
+      sessionStorage.setItem("mirante_credentials", credentials_stringified);
+      dialog.innerText = "Conta criada com sucesso";
+      return ;
+    } else {
+      return ;
+    }
+  }
+  catch (exn$1){
+    console.log({
+          TAG: "Error",
+          _0: "Erro ao processar resposta"
+        });
+    dialog.innerText = "Erro ao processar resposta";
     return ;
   }
 }
