@@ -19,11 +19,13 @@ async function sign_up_handler($$event) {
     },
     body: JSON.stringify(form_data)
   };
+  var response_store = {};
   try {
-    var response = await globalThis.fetch("http://localhost:3031/rpc/signup", post_options);
-    var response_json = await response.json();
-    console.log(response);
-    console.log(response_json);
+    var r = await globalThis.fetch("http://localhost:3031/rpc/signup", post_options);
+    response_store.response = await r.clone();
+    response_store.json = await r.json();
+    console.log(response_store.response);
+    console.log(response_store.json);
     return ;
   }
   catch (exn){
