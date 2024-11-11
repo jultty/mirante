@@ -1,12 +1,6 @@
 #!/usr/bin/env sh
 
-echo "[cleanup] Starting"
-pwd
+file="$1"
 
-for i in ../../*.js; do
-  echo "[cleanup] Cleaning $i"
-  tac "$i" | sed 's/^exports\..*=.*;$//' | tac > "$i.temp"
-  mv -vf "$i.temp" "$i"
-done
-
-echo "[cleanup] Done"
+tac "$file" | sed 's/^exports\..*=.*;$//' | tac > "../../javascript/$(basename "$file")"
+rm -v "$file"

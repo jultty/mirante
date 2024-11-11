@@ -1,8 +1,9 @@
 {
   "name": "mirante-ui",
+  "version": "0.1.0",
   "sources": {
-    "dir": ".",
-    "subdirs": false
+    "dir": "rescript",
+    "subdirs": true
   },
   "package-specs": {
     "module": "commonjs",
