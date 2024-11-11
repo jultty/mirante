@@ -61,7 +61,7 @@ let setStatus = async (_) => {
 
   // Authentication logic
 
-  let stored_credentials = getItem(sessionStorage, "mirate_credentials")
+  let stored_credentials = getItem(sessionStorage, "mirante_credentials")
 
   try {
     if Js.testAny(stored_credentials) {

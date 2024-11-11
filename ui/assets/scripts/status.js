@@ -31,7 +31,7 @@ async function setStatus(param) {
           _0: "Erro de conexão inesperado"
         });
   }
-  var stored_credentials = sessionStorage.getItem("mirate_credentials");
+  var stored_credentials = sessionStorage.getItem("mirante_credentials");
   try {
     if (stored_credentials == null) {
       status_object.user = "[Não autenticado]";
