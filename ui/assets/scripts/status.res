@@ -51,7 +51,6 @@ let setStatus = async (_) => {
     let response = await fetch("http://localhost:3031/version?current=is.true", fetch_options)
     let response_json = await response->Response.json
     let (first_version, _) = response_json
-    Console.log(first_version)
     switch first_version.tag {
       | "" => status_object.error = "No version tag in response"
       | _ => status_object.version = "Mirante " ++ first_version.tag
@@ -62,7 +61,7 @@ let setStatus = async (_) => {
 
   // Authentication logic
 
-  let stored_credentials = getItem(sessionStorage, "mirante_credentials")
+  let stored_credentials = getItem(sessionStorage, "mirate_credentials")
 
   try {
     if Js.testAny(stored_credentials) {

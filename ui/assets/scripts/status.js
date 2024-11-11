@@ -18,7 +18,6 @@ async function setStatus(param) {
     var response = await globalThis.fetch("http://localhost:3031/version?current=is.true", fetch_options);
     var response_json = await response.json();
     var first_version = response_json[0];
-    console.log(first_version);
     var match = first_version.tag;
     if (match === "") {
       status_object.error = "No version tag in response";
@@ -32,7 +31,7 @@ async function setStatus(param) {
           _0: "Erro de conexão inesperado"
         });
   }
-  var stored_credentials = sessionStorage.getItem("mirante_credentials");
+  var stored_credentials = sessionStorage.getItem("mirate_credentials");
   try {
     if (stored_credentials == null) {
       status_object.user = "[Não autenticado]";
