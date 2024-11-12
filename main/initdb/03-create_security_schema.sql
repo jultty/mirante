@@ -12,9 +12,14 @@ grant usage on schema mirante to base_user;
 
 create table
 security.user (
-  email     text primary key check ( email ~* '^.+@.+\..+$' ),
-  password  text not null check (length(password) < 512),
-  role      name not null check (length(role) < 512)
+  email       text primary key check ( email ~* '^.+@.+\..+$' ),
+  password    text not null check (length(password) < 512),
+  role        name not null check (length(role) < 512),
+  name        text,
+  occupation  text,
+  city        text,
+  cpf         text,
+  cep         text
 );
 
 create function
