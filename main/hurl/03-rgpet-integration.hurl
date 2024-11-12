@@ -39,6 +39,7 @@ POST http://localhost:3031/rpc/signup
 }
 
 HTTP 200
+
 [Captures]
 not_integrator_token: jsonpath "$.token"
 
