@@ -2,7 +2,7 @@
   "name": "mirante-ui",
   "version": "0.1.0",
   "sources": {
-    "dir": "rescript",
+    "dir": "public/assets/scripts/rescript",
     "subdirs": true
   },
   "package-specs": {

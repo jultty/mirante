@@ -5,7 +5,8 @@
   "scripts": {
     "res:build": "rescript",
     "res:clean": "rescript clean",
-    "res:dev": "rescript build -w"
+    "res:dev": "rescript build -w",
+    "serve": "serve -p 8000 public"
   },
   "repository": {
     "type": "git",
@@ -15,6 +16,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@rescript/core": "*",
-    "rescript": "*"
+    "rescript": "*",
+    "serve": "^14.2.4"
   }
 }
