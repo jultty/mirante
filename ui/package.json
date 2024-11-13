@@ -18,5 +18,6 @@
     "@rescript/core": "*",
     "rescript": "*",
     "serve": "^14.2.4"
-  }
+  },
+  "type": "module"
 }

@@ -6,13 +6,13 @@
     "subdirs": true
   },
   "package-specs": {
-    "module": "commonjs",
+    "module": "esmodule",
     "in-source": true
   },
   "suffix": ".js",
   "bsc-flags": ["-open RescriptCore"],
   "bs-dependencies": ["@rescript/core"],
   "js-post-build": {
-    "cmd": "./cleanup.sh"
+    "cmd": "./post-build.sh"
   }
 }
