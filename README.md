@@ -1,4 +1,4 @@
-<img alt="An icon of a lighthouse on a cliff top with two light beams pointing outwards" src="ui/assets/images/icon.png" align="right">
+<img alt="An icon of a lighthouse on a cliff top with two light beams pointing outwards" src="ui/public/assets/images/icon.png" align="right">
 
 # Mirante
 
