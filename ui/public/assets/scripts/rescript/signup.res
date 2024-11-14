@@ -115,7 +115,7 @@ let sign_up_handler = async (event) => {
 
       let status = switch response.status {
         | Some(status) => status
-        | None => -1 // TODO: replace magic number with enum?
+        | None => -1 // TODO: replace magic number with variant
       }
 
       let json =  switch response_store.json {
