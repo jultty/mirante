@@ -14,7 +14,7 @@
     "module": "esmodule",
     "in-source": true
   },
-  "suffix": ".js",
+  "suffix": ".res.mjs",
   "bsc-flags": ["-open RescriptCore"],
   "bs-dependencies": ["@rescript/core"],
   "js-post-build": {
