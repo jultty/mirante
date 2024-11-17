@@ -1,13 +1,18 @@
-type document
-type rec element = { lastElementChild: Js.null<element> }
-
-@send external getElementById: (document, string) => element = "getElementById"
-@send external removeChild: (element, Js.null<element>) => unit = "removeChild"
-@val external doc: document = "document"
+open Browser
 
 let clearChildren = (id: string) => {
-  let parent = getElementById(doc, id)
-  while !Js.testAny(parent.lastElementChild) {
-    removeChild(parent, parent.lastElementChild)
+
+  let parent = Option.getExn(
+    getElementById(doc, id),
+    ~message="[clearChildren] parent not found"
+  )
+
+  while Option.isSome(parent.lastElementChild) {
+
+    removeChild(
+      parent,
+      Option.getExn(parent.lastElementChild,
+        ~message="[clearChildren] child not found"))
+
   }
 }

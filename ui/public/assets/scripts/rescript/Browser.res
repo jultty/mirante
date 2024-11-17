@@ -14,7 +14,8 @@ type sessionStorage
 type rec element = {
   mutable innerText?: string,
   mutable href?: string,
-  mutable id?: string
+  mutable id?: string,
+  lastElementChild?: element,
 }
 
 module Response = {
@@ -27,6 +28,7 @@ module Response = {
 
 @send external createElement: (document, string) => element = "createElement"
 @send external appendChild: (element, element) => () = "appendChild"
+@send external removeChild: (element, element) => unit = "removeChild"
 @send external prepend: (element, element) => () = "prepend"
 @send external before: (element, element) => () = "before"
 @send external getItem: (sessionStorage, string) => string = "getItem"
