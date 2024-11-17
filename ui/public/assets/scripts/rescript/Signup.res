@@ -6,16 +6,19 @@ type event
 type object
 type sessionStorage
 type form_data
-type rec element = { mutable innerText: Js.null<string> }
+type rec element = { mutable innerText: Js.null<string>, mutable id?: string }
 
 @val external doc: document = "document"
 @val external object: object = "Object"
 @val external storage: sessionStorage = "sessionStorage"
 
+@send external getElementsByTagName: (document, string) => array<element> = "getElementsByTagName"
 @send external getElementById: (document, string) => element = "getElementById"
 @send external addEventListener: (element, string, 'a => promise<unit>) => unit = "addEventListener"
 @send external preventDefault: (event) => unit = "preventDefault"
 @send external store: (sessionStorage, string, string) => () = "setItem"
+@send external createElement: (document, string) => element = "createElement"
+@send external appendChild: (element, element) => () = "appendChild"
 
 type fields
 @new external parseFields: element => object = "FormData"
@@ -66,16 +69,23 @@ type response_store = {
   mutable json?: response_body,
 }
 
-// Status logic
+// Populate form
 
-let form: element = getElementById(doc, "account_creation_form")
+let main = Option.getExn(getElementsByTagName(doc, "main")[0], ~message="main not found")
+let signup_form = createElement(doc, "form")
+signup_form.id = Some("signup_form")
+appendChild(main, signup_form)
+
+// Signup logic
+
+let signup_form: element = getElementById(doc, "signup_form")
 let dialog: element = getElementById(doc, "user_dialog")
 
 let sign_up_handler = async (event) => {
   preventDefault(event)
   dialog.innerText = Null.make("")
 
-  let form_data = parseForm(object, parseFields(form))
+  let form_data = parseForm(object, parseFields(signup_form))
 
   let post_options = {
     "method": "POST",
@@ -164,4 +174,4 @@ let sign_up_handler = async (event) => {
 
 }
 
-addEventListener(form, "submit", sign_up_handler)
+addEventListener(signup_form, "submit", sign_up_handler)

@@ -6,17 +6,20 @@ type event
 type object
 type sessionStorage
 type form_data = { "email": string, "password": string }
-type rec element = { mutable innerText: Js.null<string> }
+type rec element = { mutable innerText: Js.null<string>, mutable id?: string }
 
 @val external doc: document = "document"
 @val external object: object = "Object"
 @val external storage: sessionStorage = "sessionStorage"
 
-@send external getElementById: (document, string) => element = "getElementById"
+@send external getElementsByTagName: (document, string) => array<element> = "getElementsByTagName"
+@send external getElementById: (document, string) => option<element> = "getElementById"
 @send external addEventListener: (element, string, 'a => promise<unit>) => unit = "addEventListener"
 @send external preventDefault: (event) => unit = "preventDefault"
 @send external store: (sessionStorage, string, string) => () = "setItem"
 @send external retrieve: (sessionStorage, string, string) => () = "getItem"
+@send external createElement: (document, string) => element = "createElement"
+@send external appendChild: (element, element) => () = "appendChild"
 
 type fields
 @new external parseFields: element => object = "FormData"
@@ -24,6 +27,8 @@ type fields
 
 @val external sessionStorage: sessionStorage = "sessionStorage"
 @send external getItem: (sessionStorage, string) => string = "getItem"
+
+exception ElementNotFound(string)
 
 // Data models
 
@@ -68,16 +73,23 @@ type response_store = {
 @val @scope("globalThis")
 external fetch: (string, 'params) => promise<Response.t<response_body, response>> = "fetch"
 
+// Populate form
+
+let main = Option.getExn(getElementsByTagName(doc, "main")[0], ~message="main not found")
+let login_form = createElement(doc, "form")
+login_form.id = Some("login_form")
+appendChild(main, login_form)
+
 // Login logic
 
-let form: element = getElementById(doc, "login_form")
-let dialog: element = getElementById(doc, "user_dialog")
+let login_form = Option.getExn(getElementById(doc, "login_form"), ~message="login_form not found")
+let dialog = Option.getExn(getElementById(doc, "user_dialog"), ~message="user_dialog not found")
 
 let login_handler = async (event) => {
   preventDefault(event)
   dialog.innerText = Null.make("")
 
-  let form_data = parseForm(object, parseFields(form))
+  let form_data = parseForm(object, parseFields(login_form))
 
   let post_options = {
     "method": "POST",
@@ -163,4 +175,4 @@ let login_handler = async (event) => {
 
 }
 
-addEventListener(form, "submit", login_handler)
+addEventListener(login_form, "submit", login_handler)
