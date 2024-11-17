@@ -28,11 +28,6 @@ body = document.getElementsByTagName('body')[0]
 
 // footer
 
-    // <footer>
-    //   <hr>
-    //   <p id="status">Conectando...</p>
-    // </footer>
-
 {
   let footer = document.createElement('footer')
   let hr = document.createElement('hr')
