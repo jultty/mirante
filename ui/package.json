@@ -6,8 +6,10 @@
     "res:build": "rescript",
     "res:clean": "rescript clean",
     "res:dev": "rescript build -w",
-    "serve": "serve -p 8000 public"
+    "serve": "serve -p 8000 public",
+    "bundle": "npx esbuild public/assets/scripts/javascript/Main.res.mjs --bundle --outfile=public/assets/scripts/javascript/bundle.js --format=esm"
   },
+  "keywords": ["rescript"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jultty/mirante.git"
@@ -15,8 +17,8 @@
   "author": "Juno Takano <juno@jutty.dev>",
   "license": "GPL-3.0",
   "dependencies": {
-    "@rescript/core": "*",
-    "rescript": "*",
+    "@rescript/core": "1.6.1",
+    "rescript": "11.1.4",
     "serve": "^14.2.4"
   },
   "type": "module"
