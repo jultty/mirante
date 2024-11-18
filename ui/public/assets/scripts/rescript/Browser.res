@@ -71,8 +71,10 @@ type response_store = {
 @send external before: (element, element) => () = "before"
 @send external preventDefault: (event) => unit = "preventDefault"
 
+%%private(
 @send external getElementById: (document, string) =>
   option<element> = "getElementById"
+)
 
 @send external getElementsByTagName: (document, string) =>
   array<element> = "getElementsByTagName"

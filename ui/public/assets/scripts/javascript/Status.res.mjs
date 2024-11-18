@@ -2,7 +2,7 @@
 
 import * as Auth from "./Auth.res.mjs";
 import * as Meta from "./Meta.res.mjs";
-import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
+import * as Browser from "./Browser.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 var status_object = {
@@ -45,7 +45,7 @@ async function setStatus(param) {
     var error$1 = Caml_js_exceptions.internalToOCamlException(raw_error$1);
     console.log(error$1);
   }
-  var status_element = Core__Option.getExn(document.getElementById("status"), "status_element not found");
+  var status_element = Browser.getElement("status", "Status.setStatus");
   if (status_object.error !== "") {
     status_element.innerText = "Erro: " + status_object.error;
     return ;
