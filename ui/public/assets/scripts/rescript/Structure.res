@@ -25,7 +25,7 @@ let create_menu = () => {
     anchor.innerText = Some(item.name)
 
     if Option.isSome(item.slug) {
-      anchor.href = Some(Option.getUnsafe(item.slug) ++ ".html")
+      anchor.href = Some(Option.getOr(item.slug, ""))
     }
 
     anchor.onclick = switch item.handler {
