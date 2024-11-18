@@ -9,11 +9,11 @@ type menu_item = { name: string, slug?: string, handler?: () => () }
 let create_menu = () => {
 
   let menu_items = [
-    { name: "Início", slug: "index" },
+    { name: "Início", slug: "/" },
     { name: "Login", handler: Login.structure },
     { name: "Criar conta", handler: Signup.structure },
-    { name: "Cursos", slug: "course" },
-    ]
+    { name: "Cursos", handler: Course.structure },
+  ]
 
   let menu = createElement(doc, "nav")
   let list = createElement(doc, "ul")
