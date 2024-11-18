@@ -38,7 +38,7 @@ let setStatus = async (_: Browser.event) => {
   }
 
   } catch {
-    | _ => Console.log(Error("Erro de conexão inesperado")) // TODO: concatenate actual error
+    | error => Console.log(error)
   }
 
   // Authentication logic
@@ -56,7 +56,7 @@ let setStatus = async (_: Browser.event) => {
       status_object.user = "[" ++ credentials_json.email ++ "]"
     }
   } catch {
-    | _ => Console.log(Error("Erro de conexão inesperado")) // TODO: concatenate actual error
+    | error => Console.log(error)
   }
 
   // Status message assembly logic

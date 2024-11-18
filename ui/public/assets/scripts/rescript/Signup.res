@@ -60,8 +60,8 @@ let signup_handler = async (event) => {
      Console.log(response_store.json)
 
    } catch {
-     | _ => {
-       Console.log(Error("Erro na requisição"))
+     | error => {
+       Console.log(error)
        dialog.innerText = Some("Erro na requisição")
      }
    }
@@ -108,8 +108,8 @@ let signup_handler = async (event) => {
     | value => Console.log(`Unexpected return status ${Int.toString(value)}`)
     }
   } catch {
-     | _ => {
-       Console.log(Error("Erro ao processar resposta"))
+     | error => {
+       Console.log(error)
        dialog.innerText = Some("Erro ao processar resposta")
      }
    }
