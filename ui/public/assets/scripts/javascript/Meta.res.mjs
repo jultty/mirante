@@ -6,10 +6,11 @@ var endpoints = {
   login: "http://localhost:3031/rpc/login",
   version: "http://localhost:3031/version",
   current_version: "http://localhost:3031/version?current=is.true",
-  course: ""
+  course: "http://localhost:3031/course"
 };
 
 var constants = {
+  root_url: "http://localhost:3031",
   storage_key: "mirante_credentials"
 };
 
@@ -38,8 +39,8 @@ var supported_server_versions = {
 };
 
 export {
-  endpoints ,
   constants ,
+  endpoints ,
   client_version ,
   supported_server_versions ,
 }

@@ -3,6 +3,7 @@
 import * as Meta from "./Meta.res.mjs";
 import * as Browser from "./Browser.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
+import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 function populate_form() {
   var main = Browser.getElementByTag("main", "Login.main");
@@ -19,6 +20,9 @@ function populate_form() {
       label: "Senha:"
     }
   ];
+  var header = Browser.makeElement("h2");
+  header.innerText = "Login";
+  main.appendChild(header);
   var login_form = Browser.FormBuilder.make_form(fields, "login_form");
   main.appendChild(login_form);
 }
@@ -42,11 +46,9 @@ async function login_handler($$event) {
     response_store.response = await response.clone();
     response_store.json = await response.json();
   }
-  catch (exn){
-    console.log({
-          TAG: "Error",
-          _0: "Erro na requisição"
-        });
+  catch (raw_error){
+    var error = Caml_js_exceptions.internalToOCamlException(raw_error);
+    console.log(error);
     dialog.innerText = "Erro na requisição";
   }
   try {
@@ -66,9 +68,9 @@ async function login_handler($$event) {
           token: token
         };
         var credentials_stringified = Core__Option.getExn(JSON.stringify(credentials), undefined);
-        sessionStorage.setItem(Meta.constants.storage_key, credentials_stringified);
+        Browser.store(Meta.constants.storage_key, credentials_stringified);
         dialog.innerText = "Login realizado com sucesso";
-        console.log(JSON.stringify(sessionStorage.getItem(Meta.constants.storage_key)));
+        console.log(JSON.stringify(Browser.retrieve(Meta.constants.storage_key)));
         return ;
       }
       exit = 1;
@@ -85,11 +87,9 @@ async function login_handler($$event) {
     }
     
   }
-  catch (exn$1){
-    console.log({
-          TAG: "Error",
-          _0: "Erro ao processar resposta"
-        });
+  catch (raw_error$1){
+    var error$1 = Caml_js_exceptions.internalToOCamlException(raw_error$1);
+    console.log(error$1);
     dialog.innerText = "Erro ao processar resposta";
     return ;
   }
@@ -97,7 +97,7 @@ async function login_handler($$event) {
 
 function structure() {
   populate_form();
-  Browser.getElement("login_form", "Login.addSubmitListener").addEventListener("submit", login_handler);
+  Browser.submitListen(Browser.getElement("login_form", "Login.addSubmitListener"), login_handler);
 }
 
 export {

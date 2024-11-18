@@ -3,6 +3,7 @@
 import * as Meta from "./Meta.res.mjs";
 import * as Browser from "./Browser.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
+import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 function populate_form() {
   var main = Browser.getElementByTag("main", "Signup.main");
@@ -19,6 +20,9 @@ function populate_form() {
       label: "Senha:"
     }
   ];
+  var header = Browser.makeElement("h2");
+  header.innerText = "Criar conta";
+  main.appendChild(header);
   var signup_form = Browser.FormBuilder.make_form(fields, "signup_form");
   main.appendChild(signup_form);
 }
@@ -44,11 +48,9 @@ async function signup_handler($$event) {
     console.log(response_store.response);
     console.log(response_store.json);
   }
-  catch (exn){
-    console.log({
-          TAG: "Error",
-          _0: "Erro na requisição"
-        });
+  catch (raw_error){
+    var error = Caml_js_exceptions.internalToOCamlException(raw_error);
+    console.log(error);
     dialog.innerText = "Erro na requisição";
   }
   try {
@@ -80,9 +82,9 @@ async function signup_handler($$event) {
           token: token
         };
         var credentials_stringified = Core__Option.getExn(JSON.stringify(credentials), undefined);
-        sessionStorage.setItem(Meta.constants.storage_key, credentials_stringified);
+        Browser.store(Meta.constants.storage_key, credentials_stringified);
         dialog.innerText = "Conta criada com sucesso";
-        console.log(JSON.stringify(sessionStorage.getItem(Meta.constants.storage_key)));
+        console.log(JSON.stringify(Browser.retrieve(Meta.constants.storage_key)));
         return ;
       }
       exit = 1;
@@ -93,11 +95,9 @@ async function signup_handler($$event) {
     }
     
   }
-  catch (exn$1){
-    console.log({
-          TAG: "Error",
-          _0: "Erro ao processar resposta"
-        });
+  catch (raw_error$1){
+    var error$1 = Caml_js_exceptions.internalToOCamlException(raw_error$1);
+    console.log(error$1);
     dialog.innerText = "Erro ao processar resposta";
     return ;
   }
@@ -105,7 +105,7 @@ async function signup_handler($$event) {
 
 function structure() {
   populate_form();
-  Browser.getElement("signup_form", "Signup.addSubmitListener").addEventListener("submit", signup_handler);
+  Browser.submitListen(Browser.getElement("signup_form", "Signup.addSubmitListener"), signup_handler);
 }
 
 export {
