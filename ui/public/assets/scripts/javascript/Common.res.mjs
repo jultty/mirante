@@ -2,8 +2,7 @@
 
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 
-function clearChildren(id) {
-  var parent = Core__Option.getExn(document.getElementById(id), "[clearChildren] parent not found");
+function clearChildren(parent) {
   while(Core__Option.isSome(parent.lastElementChild)) {
     parent.removeChild(Core__Option.getExn(parent.lastElementChild, "[clearChildren] child not found"));
   };

@@ -12,33 +12,41 @@ type status = {
 }
 
 @val @scope("globalThis")
-external fetchVersion: (
-  string,
-  'params,
-) => promise<Browser.Response.t<(version, _)>> =
-  "fetch"
+external fetchVersion: (string, 'params) =>
+  promise<Browser.Response.t<array<version>, _>> = "fetch"
+
 // Status logic
 
 %%private(let status_object: status = { version: "", user: "", error: "" })
 
 let setStatus = async () => {
-  let fetch_options = { "method": "GET" }
 
   try {
-    let response = await fetchVersion("http://localhost:3031/version?current=is.true", fetch_options)
-    let response_json = await response->Browser.Response.json
-    let (first_version, _) = response_json
-    switch first_version.tag {
-      | "" => status_object.error = "No version tag in response"
-      | _ => status_object.version = "Mirante " ++ first_version.tag
-      }
+    // TODO Extract URL
+    let url = Meta.endpoints.current_version
+    let response = await fetchVersion(url, { "method": "GET" })
+    let response_json: array<version> = await response->Browser.Response.json
+
+    switch response_json[1] {
+    | Some(_) => status_object.error = "More than one current version returned"
+    | None => ()
+    }
+
+    switch response_json[0] {
+    | Some(element) => status_object.version = "Mirante " ++ element.tag
+    | None => status_object.error = "No current version returned"
+  }
+
   } catch {
     | _ => Console.log(Error("Erro de conexão inesperado")) // TODO: concatenate actual error
   }
 
   // Authentication logic
 
-  let stored_credentials = Browser.getItem(Browser.sessionStorage, "mirante_credentials")
+  let stored_credentials = Browser.retrieve(
+    Browser.storage, Meta.constants.storage_key)
+
+  Console.log(stored_credentials)
 
   try {
     if Js.testAny(stored_credentials) {

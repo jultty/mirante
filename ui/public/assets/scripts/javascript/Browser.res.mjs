@@ -5,15 +5,94 @@ import * as Caml_exceptions from "rescript/lib/es6/caml_exceptions.js";
 
 var $$Response = {};
 
+var ElementNotFound = /* @__PURE__ */Caml_exceptions.create("Browser.ElementNotFound");
+
 function getBody() {
   return Core__Option.getExn(document.getElementsByTagName("body")[0], "body not found");
 }
 
-var ElementNotFound = /* @__PURE__ */Caml_exceptions.create("Browser.ElementNotFound");
+function getElement(element, getter) {
+  return Core__Option.getExn(document.getElementById(element), "[" + getter + "] " + element + " not found");
+}
+
+function getElementsByTag(tag, getter) {
+  var array = document.getElementsByTagName(tag);
+  var match = array[0];
+  if (match !== undefined) {
+    return array;
+  }
+  throw {
+        RE_EXN_ID: ElementNotFound,
+        _1: "[" + getter + "] No <" + tag + "> elements found",
+        Error: new Error()
+      };
+}
+
+function getElementByTag(tag, getter) {
+  var array = document.getElementsByTagName(tag);
+  var element = array[0];
+  if (element !== undefined) {
+    return element;
+  }
+  throw {
+        RE_EXN_ID: ElementNotFound,
+        _1: "[" + getter + "] No <" + tag + "> element found",
+        Error: new Error()
+      };
+}
+
+function clearChildren(parent) {
+  var array = Core__Option.getOr(parent.children, []);
+  while(array.length > 0) {
+    parent.removeChild(Core__Option.getExn(parent.lastElementChild, undefined));
+  };
+}
+
+function make_field(form, field) {
+  var id = field.id;
+  var label = document.createElement("label");
+  label.for = id;
+  label.innerText = field.label;
+  form.appendChild(label);
+  var input = document.createElement("input");
+  input.type = field.kind;
+  input.id = id;
+  input.name = id;
+  form.appendChild(input);
+  form.appendChild(document.createElement("br"));
+}
+
+function make_submit_button(form, text) {
+  var button = document.createElement("input");
+  button.type = "submit";
+  button.value = text;
+  form.appendChild(button);
+}
+
+function make_form(fields, id) {
+  var form = document.createElement("form");
+  fields.forEach(function (field) {
+        make_field(form, field);
+      });
+  make_submit_button(form, "Enviar");
+  form.id = id;
+  return form;
+}
+
+var FormBuilder = {
+  make_field: make_field,
+  make_submit_button: make_submit_button,
+  make_form: make_form
+};
 
 export {
   $$Response ,
-  getBody ,
   ElementNotFound ,
+  getBody ,
+  getElement ,
+  getElementsByTag ,
+  getElementByTag ,
+  clearChildren ,
+  FormBuilder ,
 }
 /* No side effect */

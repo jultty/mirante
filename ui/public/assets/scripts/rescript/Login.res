@@ -1,93 +1,40 @@
-// Interop bindings
-
-type document
-type form
-type event
-type object
-type sessionStorage
-type form_data = { "email": string, "password": string }
-type rec element = { mutable innerText: Js.null<string>, mutable id?: string }
-
-@val external doc: document = "document"
-@val external object: object = "Object"
-@val external storage: sessionStorage = "sessionStorage"
-
-@send external getElementsByTagName: (document, string) => array<element> = "getElementsByTagName"
-@send external getElementById: (document, string) => option<element> = "getElementById"
-@send external addEventListener: (element, string, 'a => promise<unit>) => unit = "addEventListener"
-@send external preventDefault: (event) => unit = "preventDefault"
-@send external store: (sessionStorage, string, string) => () = "setItem"
-@send external retrieve: (sessionStorage, string, string) => () = "getItem"
-@send external createElement: (document, string) => element = "createElement"
-@send external appendChild: (element, element) => () = "appendChild"
-
-type fields
-@new external parseFields: element => object = "FormData"
-@send external parseForm: (object, object) => form_data = "fromEntries"
-
-@val external sessionStorage: sessionStorage = "sessionStorage"
-@send external getItem: (sessionStorage, string) => string = "getItem"
-
-exception ElementNotFound(string)
-
-// Data models
-
-module Response = {
-  type t<'body, 'request>
-  @send external json: t<'body, 'request> => promise<'body> = "json"
-  @send external clone: t<'body, 'request> => promise<'root> = "clone"
-}
-
-type response = {
-  status?: int,
-  statusText?: string,
-  url?: string,
-  redirected?: bool,
-  ok?: bool,
-  __client_error?: string,
-}
-
-type response_body = {
-  status?: int,
-  email?: string,
-  token?: string,
-  __client_error?: string,
-}
-
-type credentials = { email: string, token: string }
-type credentials_store = { mutable email: string, mutable token: string }
-
-@scope("JSON")
-@val external parseCredentials: string => credentials = "parse"
-
-@scope("JSON")
-@val external stringifyCredentials: credentials => string = "stringify"
-
-type response_store = {
-  mutable response?: response,
-  mutable json?: response_body,
-}
-
-// Dependent interop bindings
-
-@val @scope("globalThis")
-external fetch: (string, 'params) => promise<Response.t<response_body, response>> = "fetch"
+open Browser
+open Auth
 
 // Populate form
 
-let main = Option.getExn(getElementsByTagName(doc, "main")[0], ~message="main not found")
-let login_form = createElement(doc, "form")
-login_form.id = Some("login_form")
-appendChild(main, login_form)
+let populate_form = () => {
+
+  let main = getElementByTag("main", "Login.main")
+  clearChildren(main)
+
+  let fields: array<FormBuilder.field> = [
+    {
+      id: "email",
+      kind: "email",
+      label: "Email:",
+    },
+    {
+      id: "password",
+      kind: "password",
+      label: "Senha:",
+    },
+  ]
+
+  let login_form = FormBuilder.make_form(fields, "login_form")
+  appendChild(main, login_form)
+
+}
 
 // Login logic
 
-let login_form = Option.getExn(getElementById(doc, "login_form"), ~message="login_form not found")
-let dialog = Option.getExn(getElementById(doc, "user_dialog"), ~message="user_dialog not found")
-
 let login_handler = async (event) => {
   preventDefault(event)
-  dialog.innerText = Null.make("")
+
+  let dialog: element = getElement("user_dialog", "Login.dialog")
+  let login_form: element = getElement("login_form", "Login.login_form")
+
+  dialog.innerText = Some("")
 
   let form_data = parseForm(object, parseFields(login_form))
 
@@ -101,78 +48,70 @@ let login_handler = async (event) => {
 
    try {
 
-     let response = await fetch("http://localhost:3031/rpc/login", post_options)
+     let response = await fetch(Meta.endpoints.login, post_options)
      response_store.response = Some(await response->Response.clone)
      response_store.json = Some(await response->Response.json)
-
-     Console.log(response_store.response)
-     Console.log(response_store.json)
 
    } catch {
      | _ => {
        Console.log(Error("Erro na requisição"))
-       dialog.innerText = Null.make("Erro na requisição")
-       () // TODO: should exit the function here, does it?
+       dialog.innerText = Some("Erro na requisição")
      }
    }
 
-   try {
+  try {
 
-     // TODO
-     // this destructuring with switches is a pattern that can be extracted to common.res
-     // this syntax avoids Caml_option imports, which are not supported in the browser
+    let response = switch response_store.response {
+      | Some(response) => response
+      | None => { __client_error: "" }
+    }
 
-     let response = switch response_store.response {
-        | Some(response) => response
-        | None => { __client_error: "" }
+    let status = Option.getExn(response.status,
+      ~message="[Login.status] Destructuring error")
+
+    switch status {
+    | 400 | 403 => {
+        dialog.innerText =
+          Some("Requisição inválida. Os dados informados estão corretos?")
       }
+    | 200 | 201 => {
+        let json = Option.getExn(response_store.json,
+          ~message="[Login.json] Destructuring error")
 
-      let status = switch response.status {
-        | Some(status) => status
-        | None => -1 // TODO: replace magic number with variant
+        let token = Option.getExn(json.token,
+          ~message="[Login.token] Destructuring error")
+
+        let credentials: credentials = {
+          user_email: form_data["email"],
+          user_token: token
+        }
+
+        let credentials_stringified: string =
+          Option.getExn(JSON.stringifyAny(credentials))
+
+        store(storage, Meta.constants.storage_key, credentials_stringified)
+        dialog.innerText = Some("Login realizado com sucesso")
+
+        Console.log(
+         JSON.stringifyAny(retrieve(storage, Meta.constants.storage_key)))
       }
-
-      let json = switch response_store.json {
-        | Some(json) => json
-        | None => { __client_error: "json function not found while destructuring object" }
-      }
-
-      let email = form_data["email"]
-
-      let token = switch json.token {
-        | Some(token) => token
-        | None => { Console.log("Token field not found while destructuring") ; ""}
-      }
-
-      let credentials: credentials = { email: email, token: token }
-      let credentials_stringified: string = switch JSON.stringifyAny(credentials) {
-        | Some(string) => string
-        | None => ""
-      }
-
-      Console.log("response_store.json:")
-      Console.log(json)
-
-     if status == 400 {
-       dialog.innerText = Null.make("Requisição inválida. Os dados informados são válidos?")
-       () // TODO: should exit the function here, does it?
-     } else if status == 403 || status == 403 {
-       dialog.innerText = Null.make("Credenciais inválidas: senha incorreta ou email inexistente")
-       () // TODO: should exit the function here, does it?
-      } else if status == 200 || status == 201 {
-        Console.log(JSON.stringifyAny(credentials))
-        store(storage, "mirante_credentials", credentials_stringified)
-        dialog.innerText = Null.make("Login realizado com sucesso")
-        () // TODO: should exit the function here, does it?
-     }
-   } catch {
+    | value => Console.log(`Unexpected return status ${Int.toString(value)}`)
+    }
+  } catch {
      | _ => {
-    Console.log(Error("Erro ao processar resposta"))
-       dialog.innerText = Null.make("Erro ao processar resposta")
-       () // TODO: should exit the function here, does it?
+       Console.log(Error("Erro ao processar resposta"))
+       dialog.innerText = Some("Erro ao processar resposta")
      }
    }
 
 }
 
-addEventListener(login_form, "submit", login_handler)
+let structure = () => {
+
+  populate_form()
+
+  addSubmitListener(
+    getElement("login_form", "Login.addSubmitListener"),
+    "submit", login_handler
+  )
+}

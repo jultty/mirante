@@ -4,14 +4,14 @@ open Browser
 
 // navigation menu
 
-type menu_item = { name: string, slug: string }
+type menu_item = { name: string, slug?: string, handler?: () => () }
 
 let create_menu = () => {
 
   let menu_items = [
     { name: "Início", slug: "index" },
-    { name: "Login", slug: "login" },
-    { name: "Criar conta", slug: "signup" },
+    { name: "Login", handler: Login.structure },
+    { name: "Criar conta", handler: Signup.structure },
     { name: "Cursos", slug: "course" },
     ]
 
@@ -22,7 +22,13 @@ let create_menu = () => {
     let list_item = createElement(doc, "li")
     let anchor = createElement(doc, "a")
     anchor.innerText = Some(item.name)
-    anchor.href = Some(item.slug ++ ".html")
+    if Option.isSome(item.slug) {
+      anchor.href = Some(Option.getUnsafe(item.slug) ++ ".html")
+    }
+    anchor.onclick = switch item.handler {
+    | Some(handler) => Some(handler)
+    | None => None
+    }
     appendChild(list_item, anchor)
     appendChild(list, list_item)
   })
@@ -54,7 +60,12 @@ let create_footer = () => {
 // user dialog
 
 let create_user_dialog = () => {
-  let footer = Option.getExn(getElementsByTagName(doc, "footer")[0], ~message="footer not found")
+
+  let footer = Option.getExn(
+    getElementsByTagName(doc, "footer")[0],
+    ~message="footer not found"
+  )
+
   let user_dialog = createElement(doc, "p")
   user_dialog.id = Some("user_dialog" )
   before(footer, user_dialog)
