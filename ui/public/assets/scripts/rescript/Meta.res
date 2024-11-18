@@ -1,5 +1,15 @@
 // Constants
 
+type constants = {
+  root_url: string,
+  storage_key: string,
+}
+
+let constants = {
+  root_url: "http://localhost:3031",
+  storage_key: "mirante_credentials",
+}
+
 type endpoints = {
   signup: string,
   login: string,
@@ -9,19 +19,11 @@ type endpoints = {
 }
 
 let endpoints = {
-  signup: "http://localhost:3031/rpc/signup",
-  login: "http://localhost:3031/rpc/login",
-  version: "http://localhost:3031/version",
-  current_version: "http://localhost:3031/version?current=is.true",
-  course: "",
-}
-
-type constants = {
-  storage_key: string,
-}
-
-let constants = {
-  storage_key: "mirante_credentials",
+  signup: `${constants.root_url}/rpc/signup`,
+  login: `${constants.root_url}/rpc/login`,
+  version: `${constants.root_url}/version`,
+  current_version: `${constants.root_url}/version?current=is.true`,
+  course: `${constants.root_url}/course`,
 }
 
 // Versions

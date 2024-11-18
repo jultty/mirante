@@ -22,7 +22,6 @@ external fetchVersion: (string, 'params) =>
 let setStatus = async (_: Browser.event) => {
 
   try {
-    // TODO Extract URL
     let url = Meta.endpoints.current_version
     let response = await fetchVersion(url, { "method": "GET" })
     let response_json: array<version> = await response->Browser.Response.json
@@ -42,11 +41,6 @@ let setStatus = async (_: Browser.event) => {
   }
 
   // Authentication logic
-
-  let stored_credentials = Browser.retrieve(
-    Browser.storage, Meta.constants.storage_key)
-
-  Console.log(stored_credentials)
 
   try {
     if Js.testAny(stored_credentials) {

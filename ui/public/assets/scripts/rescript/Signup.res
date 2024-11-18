@@ -103,7 +103,7 @@ let signup_handler = async (event) => {
         dialog.innerText = Some("Conta criada com sucesso")
 
         Console.log(
-         JSON.stringifyAny(retrieve(storage, Meta.constants.storage_key)))
+         JSON.stringifyAny(retrieve(Meta.constants.storage_key)))
       }
     | value => Console.log(`Unexpected return status ${Int.toString(value)}`)
     }

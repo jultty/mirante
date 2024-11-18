@@ -16,3 +16,22 @@ type credentials = {
 
 @scope("JSON")
 @val external stringifyCredentials: credentials => string = "stringify"
+
+let getCredentialsOption = (): option<credentials> => {
+
+  let stringifiedOpt: option<string> = retrieve(Meta.constants.storage_key)
+
+  switch stringifiedOpt {
+  | Some(s) => Some(parseCredentials(s))
+  | None => None
+  }
+}
+
+let getCredentials = (): credentials => {
+  let stringified = switch retrieve(Meta.constants.storage_key) {
+  | Some(credentials) => credentials
+  | None => raise(CredentialsNotFound("[Auth.getToken] Browser.retrieve returned None"))
+  }
+
+  parseCredentials(stringified)
+}
