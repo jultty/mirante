@@ -21,6 +21,10 @@ let populate_form = () => {
     },
   ]
 
+  let header = makeElement("h2")
+  header.innerText = Some("Login")
+  appendChild(main, header)
+
   let login_form = FormBuilder.make_form(fields, "login_form")
   appendChild(main, login_form)
 
@@ -89,7 +93,7 @@ let login_handler = async (event) => {
         let credentials_stringified: string =
           Option.getExn(JSON.stringifyAny(credentials))
 
-        store(storage, Meta.constants.storage_key, credentials_stringified)
+        store(Meta.constants.storage_key, credentials_stringified)
         dialog.innerText = Some("Login realizado com sucesso")
 
         Console.log(
@@ -110,8 +114,8 @@ let structure = () => {
 
   populate_form()
 
-  addSubmitListener(
+  submitListen(
     getElement("login_form", "Login.addSubmitListener"),
-    "submit", login_handler
+    login_handler
   )
 }

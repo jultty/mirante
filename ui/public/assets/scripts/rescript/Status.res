@@ -19,7 +19,7 @@ external fetchVersion: (string, 'params) =>
 
 %%private(let status_object: status = { version: "", user: "", error: "" })
 
-let setStatus = async () => {
+let setStatus = async (_: Browser.event) => {
 
   try {
     // TODO Extract URL
@@ -61,7 +61,10 @@ let setStatus = async () => {
 
   // Status message assembly logic
 
-  let status_element = Option.getExn(Browser.getElementById(Browser.doc, "status"), ~message="status_element not found")
+  let status_element = Option.getExn(
+    Browser.getElementById(Browser.doc, "status"),
+    ~message="status_element not found"
+  )
 
   if status_object.error != "" {
     status_element.innerText = Some("Erro: " ++ status_object.error)

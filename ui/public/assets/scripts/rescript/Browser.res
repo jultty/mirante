@@ -59,14 +59,17 @@ type response_store = {
 
 // Browser functions
 
+%%private(
+@send external putInStorage: (sessionStorage, string, string) => () = "setItem"
+@send external getFromStorage: (sessionStorage, string) => Nullable.t<string> = "getItem"
 @send external createElement: (document, string) => element = "createElement"
+)
+
 @send external appendChild: (element, element) => () = "appendChild"
 @send external removeChild: (element, element) => unit = "removeChild"
 @send external prepend: (element, element) => () = "prepend"
 @send external before: (element, element) => () = "before"
 @send external preventDefault: (event) => unit = "preventDefault"
-@send external store: (sessionStorage, string, string) => () = "setItem"
-@send external retrieve: (sessionStorage, string) => string = "getItem"
 
 @send external getElementById: (document, string) =>
   option<element> = "getElementById"
@@ -74,11 +77,15 @@ type response_store = {
 @send external getElementsByTagName: (document, string) =>
   array<element> = "getElementsByTagName"
 
-@send external addListener: (window, string, 'a => promise<unit>) =>
+%%private(
+@send external addWindowEventListener: (window, string, 'a => promise<unit>) =>
   unit = "addEventListener"
+)
 
-@send external addSubmitListener: (element, string, 'a => promise<unit>) =>
+%%private(
+@send external addEventListener: (element, string, 'a => promise<unit>) =>
   unit = "addEventListener"
+)
 
 @val @scope("globalThis")
 external fetch: (string, 'params) =>
@@ -87,6 +94,7 @@ external fetch: (string, 'params) =>
 // Exceptions
 
 exception ElementNotFound(string)
+exception CredentialsNotFound(string)
 
 // Helper functions
 
@@ -128,6 +136,20 @@ let clearChildren = (parent: element) => {
   }
 }
 
+let listen = (element, event, function: event => promise<'a>) => addEventListener(element, event, function)
+
+let submitListen = (element, function: event => promise<'a>) => addEventListener(element, "submit", function)
+
+let listenFromWindow = (window, event, function: event => promise<'a>) =>
+  addWindowEventListener(window, event, function)
+
+let retrieve = (key: string): option<string> => {
+  Nullable.toOption(getFromStorage(storage, key))
+}
+
+let store = (key: string, contents: string): () => putInStorage(storage, key, contents)
+let makeElement = (element: string): element => createElement(doc, element)
+
 module FormBuilder = {
 
   type field = {
@@ -144,6 +166,8 @@ module FormBuilder = {
     label.for_ = Some(id)
     label.innerText = Some(field.label)
     appendChild(form, label)
+    appendChild(form,
+      createElement(doc, "br"))
 
     let input = createElement(doc, "input")
     input.type_ = Some(field.kind)

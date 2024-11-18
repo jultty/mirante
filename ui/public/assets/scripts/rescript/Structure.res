@@ -15,22 +15,27 @@ let create_menu = () => {
     { name: "Cursos", handler: Course.structure },
   ]
 
-  let menu = createElement(doc, "nav")
-  let list = createElement(doc, "ul")
+  let menu = makeElement("nav")
+  let list = makeElement("ul")
 
   Array.forEach(menu_items, item => {
-    let list_item = createElement(doc, "li")
-    let anchor = createElement(doc, "a")
+
+    let list_item = makeElement("li")
+    let anchor = makeElement("a")
     anchor.innerText = Some(item.name)
+
     if Option.isSome(item.slug) {
       anchor.href = Some(Option.getUnsafe(item.slug) ++ ".html")
     }
+
     anchor.onclick = switch item.handler {
     | Some(handler) => Some(handler)
     | None => None
     }
+
     appendChild(list_item, anchor)
     appendChild(list, list_item)
+
   })
 
   appendChild(menu, list)
@@ -40,21 +45,24 @@ let create_menu = () => {
 // main
 
 let create_main = () => {
-  let main = createElement(doc, "main")
+  let main = makeElement("main")
   appendChild(body, main)
 }
 
 // footer
 
 let create_footer = () => {
-  let footer = createElement(doc, "footer")
-  let hr = createElement(doc, "hr")
-  let status_dialog = createElement(doc, "p")
+
+  let footer = makeElement("footer")
+  let hr = makeElement("hr")
+  let status_dialog = makeElement("p")
   status_dialog.id = Some("status")
   status_dialog.innerText = Some("Conectando...")
+
   appendChild(footer, hr)
   appendChild(footer, status_dialog)
   appendChild(body, footer)
+
 }
 
 // user dialog
@@ -66,15 +74,17 @@ let create_user_dialog = () => {
     ~message="footer not found"
   )
 
-  let user_dialog = createElement(doc, "p")
+  let user_dialog = makeElement("p")
   user_dialog.id = Some("user_dialog" )
   before(footer, user_dialog)
 }
 
 let main = () => {
+
   create_menu()
   create_main()
   create_footer()
   create_user_dialog()
+
 }
 

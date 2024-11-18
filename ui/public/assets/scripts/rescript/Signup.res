@@ -21,6 +21,10 @@ let populate_form = () => {
     },
   ]
 
+  let header = makeElement("h2")
+  header.innerText = Some("Criar conta")
+  appendChild(main, header)
+
   let signup_form = FormBuilder.make_form(fields, "signup_form")
   appendChild(main, signup_form)
 
@@ -95,7 +99,7 @@ let signup_handler = async (event) => {
         let credentials_stringified: string =
           Option.getExn(JSON.stringifyAny(credentials))
 
-        store(storage, Meta.constants.storage_key, credentials_stringified)
+        store(Meta.constants.storage_key, credentials_stringified)
         dialog.innerText = Some("Conta criada com sucesso")
 
         Console.log(
@@ -116,8 +120,8 @@ let structure = () => {
 
   populate_form()
 
-  addSubmitListener(
+  submitListen(
     getElement("signup_form", "Signup.addSubmitListener"),
-    "submit", signup_handler
+    signup_handler
   )
 }
