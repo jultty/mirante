@@ -43,11 +43,9 @@ let setStatus = async (_: Browser.event) => {
   // Authentication logic
 
   try {
-    if Js.testAny(stored_credentials) {
-      status_object.user = "[Não autenticado]"
-    } else {
-      let credentials_json = parseCredentials(stored_credentials)
-      status_object.user = "[" ++ credentials_json.email ++ "]"
+    switch Auth.getCredentialsOption() {
+    | Some(credentials) => status_object.user = "[" ++ credentials.user_email ++ "]"
+    | None => status_object.user = "[Não autenticado]"
     }
   } catch {
     | error => Console.log(error)
