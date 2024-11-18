@@ -6,13 +6,7 @@ import * as Browser from "./Browser.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
-function make_listing_table() {
-  var div = Browser.makeElement("div");
-  var header = Browser.makeElement("h2");
-  header.innerText = "Cursos";
-  div.appendChild(header);
-  var table = Browser.makeElement("table");
-  table.id = "course_table";
+function make_header_row() {
   var header_row = Browser.makeElement("tr");
   var checkbox_header = Browser.makeElement("th");
   checkbox_header.id = "checkbox_header";
@@ -29,6 +23,17 @@ function make_listing_table() {
   edit_header.id = "edit_header";
   edit_header.innerText = "Editar";
   header_row.appendChild(edit_header);
+  return header_row;
+}
+
+function make_listing_table() {
+  var div = Browser.makeElement("div");
+  var header = Browser.makeElement("h2");
+  header.innerText = "Cursos";
+  div.appendChild(header);
+  var table = Browser.makeElement("table");
+  table.id = "course_table";
+  var header_row = make_header_row();
   table.appendChild(header_row);
   div.appendChild(table);
   var delete_button = Browser.makeElement("button");
@@ -36,6 +41,53 @@ function make_listing_table() {
   delete_button.innerText = "Excluir selecionados";
   div.appendChild(delete_button);
   return div;
+}
+
+function reset_table() {
+  var table = Browser.getElement("course_table", "Course.reset_table");
+  Browser.clearChildren(table);
+  var header_row = make_header_row();
+  table.appendChild(header_row);
+}
+
+async function update_table() {
+  var table = Browser.getElement("course_table", "Course.update_table");
+  var token = Auth.getCredentials().token;
+  var response_store = {};
+  var get_options = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    }
+  };
+  reset_table();
+  var response = await globalThis.fetch(Meta.endpoints.course, get_options);
+  response_store.response = await response.clone();
+  response_store.array = await response.json();
+  var a = response_store.array;
+  var array = a !== undefined ? a : [];
+  array.forEach(function (course) {
+        var row = Browser.makeElement("tr");
+        var checkbox_cell = Browser.makeElement("td");
+        var checkbox = Browser.makeElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = "course_" + course.id + "_checkbox";
+        checkbox.class = "course_checkbox";
+        checkbox_cell.appendChild(checkbox);
+        row.appendChild(checkbox_cell);
+        var name_cell = Browser.makeElement("td");
+        name_cell.innerText = course.name;
+        row.appendChild(name_cell);
+        var edit_cell = Browser.makeElement("td");
+        var edit_button = Browser.makeElement("button");
+        edit_button.innerText = "Editar";
+        edit_button.id = "course_" + course.id + "_edit_button";
+        edit_button.class = "course_edit_button";
+        edit_cell.appendChild(edit_button);
+        row.appendChild(edit_cell);
+        table.appendChild(row);
+      });
 }
 
 function make_creation_form() {
@@ -88,6 +140,7 @@ async function creation_handler($$event) {
     if (status > 403 || status < 400) {
       if (status === 201 || status === 200) {
         dialog.innerText = "Curso criado com sucesso";
+        await update_table();
         return ;
       }
       exit = 1;
@@ -123,18 +176,28 @@ async function creation_handler($$event) {
   }
 }
 
-function structure() {
-  var listing = make_listing_table();
+async function structure() {
+  var credentials = Auth.getCredentialsOption();
+  var dialog = Browser.getElement("user_dialog", "Course.structure");
+  if (!Core__Option.isSome(credentials)) {
+    dialog.innerText = "Crie uma conta ou faça login primeiro";
+    return ;
+  }
+  var table = make_listing_table();
   var form = make_creation_form();
   Browser.submitListen(form, creation_handler);
   var main = Browser.getElementByTag("main", "Course.structure.main");
   Browser.clearChildren(main);
-  main.appendChild(listing);
+  main.appendChild(table);
   main.appendChild(form);
+  await update_table();
 }
 
 export {
+  make_header_row ,
   make_listing_table ,
+  reset_table ,
+  update_table ,
   make_creation_form ,
   creation_handler ,
   structure ,

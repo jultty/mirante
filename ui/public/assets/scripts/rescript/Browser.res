@@ -21,6 +21,7 @@ type rec element = {
   mutable innerText?: string,
   mutable href?: string,
   mutable id?: string,
+  mutable class?: string,
   mutable name?: string,
   mutable value?: string,
   lastElementChild?: element,
@@ -30,10 +31,16 @@ type rec element = {
   children?: array<element>,
 }
 
+type entity = {
+  id: string,
+  name?: string,
+}
+
 module Response = {
   type t<'data, 'request>
   @send external json: t<'data, 'request> => promise<'data> = "json"
   @send external clone: t<'body, 'request> => promise<'root> = "clone"
+  @send external array: t<'data, 'request> => promise<array<entity>> = "json"
 }
 
 type response = {
@@ -55,6 +62,7 @@ type response_body = {
 type response_store = {
   mutable response?: response,
   mutable json?: response_body,
+  mutable array?: array<entity>
 }
 
 // Browser functions
