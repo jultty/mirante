@@ -13,18 +13,22 @@ type status = {
 
 @val @scope("globalThis")
 external fetchVersion: (string, 'params) =>
-  promise<Browser.Response.t<array<version>, _>> = "fetch"
+  promise<BrowserTypes.Response.t<array<version>, _, _>> = "fetch"
 
 // Status logic
 
 %%private(let status_object: status = { version: "", user: "", error: "" })
 
-let setStatus = async (_: Browser.event) => {
+let setStatus = async (_: BrowserTypes.event) => {
 
   try {
-    let url = Meta.endpoints.current_version
-    let response = await fetchVersion(url, { "method": "GET" })
-    let response_json: array<version> = await response->Browser.Response.json
+
+    let response = await fetchVersion(
+      Meta.schema.system.endpoints.version_current,
+      { "method": "GET" }
+    )
+
+    let response_json: array<version> = await response->BrowserTypes.Response.json
 
     switch response_json[1] {
     | Some(_) => status_object.error = "More than one current version returned"

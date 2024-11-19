@@ -1,3 +1,4 @@
+open BrowserTypes
 open Browser
 open Auth
 
@@ -48,11 +49,11 @@ let login_handler = async (event) => {
     "body": JSON.stringifyAny(form_data),
   }
 
-   let response_store: response_store = {}
+   let response_store: response_store<'a> = {}
 
    try {
 
-     let response = await fetch(Meta.endpoints.login, post_options)
+     let response = await fetch(Meta.schema.system.endpoints.login, post_options)
      response_store.response = Some(await response->Response.clone)
      response_store.json = Some(await response->Response.json)
 
@@ -93,11 +94,11 @@ let login_handler = async (event) => {
         let credentials_stringified: string =
           Option.getExn(JSON.stringifyAny(credentials))
 
-        store(Meta.constants.storage_key, credentials_stringified)
+        store(Meta.schema.system.constants.storage_key, credentials_stringified)
         dialog.innerText = Some("Login realizado com sucesso")
 
         Console.log(
-         JSON.stringifyAny(retrieve(Meta.constants.storage_key)))
+         JSON.stringifyAny(retrieve(Meta.schema.system.constants.storage_key)))
       }
     | value => Console.log(`Unexpected return status ${Int.toString(value)}`)
     }
@@ -110,7 +111,7 @@ let login_handler = async (event) => {
 
 }
 
-let structure = async () => {
+let structure = async (_: event) => {
 
   populate_form()
 

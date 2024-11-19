@@ -4,7 +4,7 @@ import * as Meta from "./Meta.res.mjs";
 import * as Browser from "./Browser.res.mjs";
 
 function getCredentialsOption() {
-  var stringifiedOpt = Browser.retrieve(Meta.constants.storage_key);
+  var stringifiedOpt = Browser.retrieve(Meta.schema.system.constants.storage_key);
   if (stringifiedOpt !== undefined) {
     return JSON.parse(stringifiedOpt);
   }
@@ -12,7 +12,7 @@ function getCredentialsOption() {
 }
 
 function getCredentials() {
-  var credentials = Browser.retrieve(Meta.constants.storage_key);
+  var credentials = Browser.retrieve(Meta.schema.system.constants.storage_key);
   var tmp;
   if (credentials !== undefined) {
     tmp = credentials;

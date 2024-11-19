@@ -1,5 +1,5 @@
+open BrowserTypes
 open Browser
-open Auth
 
 // Populate form
 
@@ -40,7 +40,7 @@ let signup_handler = async (event) => {
 
   dialog.innerText = Some("")
 
-  let form_data = parseForm(object, parseFields(signup_form))
+  let form_data = Auth.parseForm(object, Auth.parseFields(signup_form))
 
   let post_options = {
     "method": "POST",
@@ -48,11 +48,11 @@ let signup_handler = async (event) => {
     "body": JSON.stringifyAny(form_data),
   }
 
-   let response_store: response_store = {}
+   let response_store: BrowserTypes.response_store<'a> = {}
 
    try {
 
-     let response = await fetch(Meta.endpoints.signup, post_options)
+     let response = await fetch(Meta.schema.system.endpoints.signup, post_options)
      response_store.response = Some(await response->Response.clone)
      response_store.json = Some(await response->Response.json)
 
@@ -94,16 +94,16 @@ let signup_handler = async (event) => {
         let token = Option.getExn(json.token,
           ~message="[Signup.token] Destructuring error")
 
-        let credentials: credentials = { user_email: email, user_token: token }
+        let credentials: Auth.credentials = { user_email: email, user_token: token }
 
         let credentials_stringified: string =
           Option.getExn(JSON.stringifyAny(credentials))
 
-        store(Meta.constants.storage_key, credentials_stringified)
+        store(Meta.schema.system.constants.storage_key, credentials_stringified)
         dialog.innerText = Some("Conta criada com sucesso")
 
         Console.log(
-         JSON.stringifyAny(retrieve(Meta.constants.storage_key)))
+         JSON.stringifyAny(retrieve(Meta.schema.system.constants.storage_key)))
       }
     | value => Console.log(`Unexpected return status ${Int.toString(value)}`)
     }
@@ -116,7 +116,7 @@ let signup_handler = async (event) => {
 
 }
 
-let structure = async () => {
+let structure = async (_: BrowserTypes.event) => {
 
   populate_form()
 

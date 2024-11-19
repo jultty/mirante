@@ -42,7 +42,7 @@ async function signup_handler($$event) {
   };
   var response_store = {};
   try {
-    var response = await globalThis.fetch(Meta.endpoints.signup, post_options);
+    var response = await globalThis.fetch(Meta.schema.system.endpoints.signup, post_options);
     response_store.response = await response.clone();
     response_store.json = await response.json();
     console.log(response_store.response);
@@ -82,9 +82,9 @@ async function signup_handler($$event) {
           token: token
         };
         var credentials_stringified = Core__Option.getExn(JSON.stringify(credentials), undefined);
-        Browser.store(Meta.constants.storage_key, credentials_stringified);
+        Browser.store(Meta.schema.system.constants.storage_key, credentials_stringified);
         dialog.innerText = "Conta criada com sucesso";
-        console.log(JSON.stringify(Browser.retrieve(Meta.constants.storage_key)));
+        console.log(JSON.stringify(Browser.retrieve(Meta.schema.system.constants.storage_key)));
         return ;
       }
       exit = 1;
@@ -103,7 +103,7 @@ async function signup_handler($$event) {
   }
 }
 
-async function structure() {
+async function structure(param) {
   populate_form();
   return Browser.submitListen(Browser.getElement("signup_form", "Signup.addSubmitListener"), signup_handler);
 }

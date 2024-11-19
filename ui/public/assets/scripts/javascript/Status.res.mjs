@@ -13,8 +13,7 @@ var status_object = {
 
 async function setStatus(param) {
   try {
-    var url = Meta.endpoints.current_version;
-    var response = await globalThis.fetch(url, {
+    var response = await globalThis.fetch(Meta.schema.system.endpoints.version_current, {
           method: "GET"
         });
     var response_json = await response.json();

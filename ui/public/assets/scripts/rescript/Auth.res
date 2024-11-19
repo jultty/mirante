@@ -1,3 +1,4 @@
+open BrowserTypes
 open Browser
 
 type form_data = { "email": string, "password": string }
@@ -19,7 +20,7 @@ type credentials = {
 
 let getCredentialsOption = (): option<credentials> => {
 
-  let stringifiedOpt: option<string> = retrieve(Meta.constants.storage_key)
+  let stringifiedOpt: option<string> = retrieve(Meta.schema.system.constants.storage_key)
 
   switch stringifiedOpt {
   | Some(s) => Some(parseCredentials(s))
@@ -28,7 +29,7 @@ let getCredentialsOption = (): option<credentials> => {
 }
 
 let getCredentials = (): credentials => {
-  let stringified = switch retrieve(Meta.constants.storage_key) {
+  let stringified = switch retrieve(Meta.schema.system.constants.storage_key) {
   | Some(credentials) => credentials
   | None => raise(CredentialsNotFound("[Auth.getToken] Browser.retrieve returned None"))
   }

@@ -4,17 +4,17 @@ open Browser
 
 // navigation menu
 
-
-
-type menu_item = { name: string, slug?: string, handler?: () => promise<unit> }
+type menu_item = { name: string, slug?: string, handler?: (BrowserTypes.event) => promise<unit> }
 
 let create_menu = () => {
+
+  let entities = Meta.schema.entity
 
   let menu_items = [
     { name: "Início", slug: "/" },
     { name: "Criar conta", handler: Signup.structure },
     { name: "Login", handler: Login.structure },
-    { name: "Cursos", handler: Course.structure },
+    { name: "Cursos", handler: View.make_nav_handler(entities.course) },
   ]
 
   let menu = makeElement("nav")
@@ -71,10 +71,7 @@ let create_footer = () => {
 
 let create_user_dialog = () => {
 
-  let footer = Option.getExn(
-    getElementsByTagName(doc, "footer")[0],
-    ~message="footer not found"
-  )
+  let footer = getElementByTag("footer", "Structure.create_user_dialog")
 
   let user_dialog = makeElement("p")
   user_dialog.id = Some("user_dialog" )
