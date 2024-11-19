@@ -4,8 +4,6 @@ import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_exceptions from "rescript/lib/es6/caml_exceptions.js";
 
-var $$Response = {};
-
 var ElementNotFound = /* @__PURE__ */Caml_exceptions.create("Browser.ElementNotFound");
 
 var CredentialsNotFound = /* @__PURE__ */Caml_exceptions.create("Browser.CredentialsNotFound");
@@ -114,7 +112,6 @@ var FormBuilder = {
 };
 
 export {
-  $$Response ,
   ElementNotFound ,
   CredentialsNotFound ,
   getBody ,
