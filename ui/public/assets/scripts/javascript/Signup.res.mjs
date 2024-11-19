@@ -103,9 +103,9 @@ async function signup_handler($$event) {
   }
 }
 
-function structure() {
+async function structure() {
   populate_form();
-  Browser.submitListen(Browser.getElement("signup_form", "Signup.addSubmitListener"), signup_handler);
+  return Browser.submitListen(Browser.getElement("signup_form", "Signup.addSubmitListener"), signup_handler);
 }
 
 export {

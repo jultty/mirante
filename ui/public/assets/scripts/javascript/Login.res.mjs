@@ -95,9 +95,9 @@ async function login_handler($$event) {
   }
 }
 
-function structure() {
+async function structure() {
   populate_form();
-  Browser.submitListen(Browser.getElement("login_form", "Login.addSubmitListener"), login_handler);
+  return Browser.submitListen(Browser.getElement("login_form", "Login.addSubmitListener"), login_handler);
 }
 
 export {

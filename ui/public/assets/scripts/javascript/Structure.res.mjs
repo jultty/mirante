@@ -15,12 +15,12 @@ function create_menu() {
       slug: "/"
     },
     {
-      name: "Login",
-      handler: Login.structure
-    },
-    {
       name: "Criar conta",
       handler: Signup.structure
+    },
+    {
+      name: "Login",
+      handler: Login.structure
     },
     {
       name: "Cursos",

@@ -4,14 +4,16 @@ open Browser
 
 // navigation menu
 
-type menu_item = { name: string, slug?: string, handler?: () => () }
+
+
+type menu_item = { name: string, slug?: string, handler?: () => promise<unit> }
 
 let create_menu = () => {
 
   let menu_items = [
     { name: "Início", slug: "/" },
-    { name: "Login", handler: Login.structure },
     { name: "Criar conta", handler: Signup.structure },
+    { name: "Login", handler: Login.structure },
     { name: "Cursos", handler: Course.structure },
   ]
 

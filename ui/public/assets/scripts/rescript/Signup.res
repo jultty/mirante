@@ -116,7 +116,7 @@ let signup_handler = async (event) => {
 
 }
 
-let structure = () => {
+let structure = async () => {
 
   populate_form()
 

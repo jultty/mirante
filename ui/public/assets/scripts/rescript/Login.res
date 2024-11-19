@@ -110,7 +110,7 @@ let login_handler = async (event) => {
 
 }
 
-let structure = () => {
+let structure = async () => {
 
   populate_form()
 
@@ -118,4 +118,5 @@ let structure = () => {
     getElement("login_form", "Login.addSubmitListener"),
     login_handler
   )
+
 }

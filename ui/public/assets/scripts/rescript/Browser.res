@@ -25,7 +25,7 @@ type rec element = {
   mutable name?: string,
   mutable value?: string,
   lastElementChild?: element,
-  mutable onclick?: () => (),
+  mutable onclick?: () => promise<unit>,
   @as("for") mutable for_?: string,
   @as("type") mutable type_?: string,
   children?: array<element>,
