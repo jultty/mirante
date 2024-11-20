@@ -9,3 +9,19 @@ create table mirante.exercise (
   creation_user name not null default current_user,
   enabled boolean not null default true
 );
+
+grant select, insert, update, delete on mirante.exercise to base_user;
+
+alter table mirante.exercise enable row level security;
+
+create policy exercise_policy_select on mirante.exercise for select
+using (creation_user = current_user);
+
+create policy exercise_policy_update on mirante.exercise for update
+using (creation_user = current_user);
+
+create policy exercise_policy_delete on mirante.exercise for delete
+using (creation_user = current_user);
+
+create policy exercise_policy_insert on mirante.exercise for insert
+to base_user with check (true);
