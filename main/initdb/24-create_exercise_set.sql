@@ -7,3 +7,19 @@ create table mirante.exercise_set (
   creation_user name not null default current_user,
   enabled boolean not null default true
 );
+
+grant select, insert, update, delete on mirante.exercise_set to base_user;
+
+alter table mirante.exercise_set enable row level security;
+
+create policy exercise_set_policy_select on mirante.exercise_set for select
+using (creation_user = current_user);
+
+create policy exercise_set_policy_update on mirante.exercise_set for update
+using (creation_user = current_user);
+
+create policy exercise_set_policy_delete on mirante.exercise_set for delete
+using (creation_user = current_user);
+
+create policy exercise_set_policy_insert on mirante.exercise_set for insert
+to base_user with check (true);
