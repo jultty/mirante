@@ -2,3 +2,10 @@
 - [ ] Show error message on token expiration
 - [ ] Update footer status on authentication
 - [ ] Course creation allows empty names
+- [ ] Schematize errors
+  - [ ] user errors
+    - messages in (Portuguese)
+    - appears in user dialog
+  - [ ] development errors
+    - messages in English
+    - appears in console
