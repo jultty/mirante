@@ -34,6 +34,8 @@ type entity = {
 type concrete_entity = {
   @as("id") database_id: string,
   name?: string,
+  instruction?: string,
+  exercise_set?: int,
 }
 
 type course = {
@@ -47,7 +49,7 @@ type exercise_set = {
 type entity_schema = {
   course: entity,
   exercise_set: entity,
-  exercise?: entity,
+  exercise: entity,
   option?: entity,
   response?: entity,
   account?: entity,
@@ -155,6 +157,20 @@ let schema: schema = {
         ]
       },
     },
+    exercise: {
+      display_name: "exercícios",
+      plural_display_name: "exercícios",
+      slug: "exercise",
+      table_schema: {
+        table: {
+          header: "Exercícios",
+        },
+        headers: [
+          { display_text: "Instrução" },
+          { display_text: "Conjunto" },
+        ]
+      },
+    }
   }
 }
 

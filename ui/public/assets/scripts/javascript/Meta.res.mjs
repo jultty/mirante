@@ -66,6 +66,24 @@ var schema_entity = {
           display_text: "Nome"
         }]
     }
+  },
+  exercise: {
+    slug: "exercise",
+    display_name: "exercícios",
+    plural_display_name: "exercícios",
+    table_schema: {
+      table: {
+        header: "Exercícios"
+      },
+      headers: [
+        {
+          display_text: "Instrução"
+        },
+        {
+          display_text: "Conjunto"
+        }
+      ]
+    }
   }
 };
 
