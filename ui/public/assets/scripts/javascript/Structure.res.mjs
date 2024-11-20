@@ -27,6 +27,10 @@ function create_menu() {
     {
       name: "Cursos",
       handler: View.make_nav_handler(entities.course)
+    },
+    {
+      name: "Conjuntos",
+      handler: View.make_nav_handler(entities.exercise_set)
     }
   ];
   var menu = Browser.makeElement("nav");

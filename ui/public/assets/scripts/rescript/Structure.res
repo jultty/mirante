@@ -15,6 +15,7 @@ let create_menu = () => {
     { name: "Criar conta", handler: Signup.structure },
     { name: "Login", handler: Login.structure },
     { name: "Cursos", handler: View.make_nav_handler(entities.course) },
+    { name: "Conjuntos", handler: View.make_nav_handler(entities.exercise_set) },
   ]
 
   let menu = makeElement("nav")
