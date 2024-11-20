@@ -8,7 +8,9 @@ minor: regex /"tag":\s*"v\d+\.(\d+)\.\d+"/
 header "Content-Type" == "application/json; charset=utf-8"
 jsonpath "$.[0].tag" isString
 jsonpath "$.[0].tag" matches /v\d+\.\d+\.\d+/
-variable "minor" toInt >= 4
+jsonpath "$.[0].deprecated" == false
+jsonpath "$.[0].current" == true
+variable "minor" toInt == 5
 
 # client can query the version without authentication
 # and get a single object outside an array if desired
@@ -22,4 +24,6 @@ minor: regex /"tag":\s*"v\d+\.(\d+)\.\d+"/
 header "Content-Type" == "application/vnd.pgrst.object+json; charset=utf-8"
 jsonpath "$.tag" isString
 jsonpath "$.tag" matches /v\d+\.\d+\.\d+/
-variable "minor" toInt >= 4
+jsonpath "$.deprecated" == false
+jsonpath "$.current" == true
+variable "minor" toInt == 5

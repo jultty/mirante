@@ -104,7 +104,7 @@ type schema = {
 }
 
 let client_version = { major: 0, minor: 1, patch: 0 }
-let server_version = { major: 0, minor: 4, patch: 0 }
+let server_version = { major: 0, minor: 5, patch: 0 }
 let root_url = "http://localhost:3031"
 
 let schema: schema = {

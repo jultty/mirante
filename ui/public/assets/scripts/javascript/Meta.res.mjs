@@ -9,7 +9,7 @@ var client_version = {
 
 var server_version = {
   major: 0,
-  minor: 4,
+  minor: 5,
   patch: 0
 };
 
