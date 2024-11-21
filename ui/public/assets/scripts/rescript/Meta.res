@@ -7,20 +7,39 @@ type table = {
   headers: array<string>,
 }
 
-// Entity schema
-
-type generic_response_store<'a> = {
-  mutable response?: BrowserTypes.response,
-  mutable json?: BrowserTypes.response_body,
-  mutable array?: array<'a>
+type field = {
+  id: string,
+  @as("type") kind: string,
+  text?: string,
+  label?: string,
+  options?: array<string>
 }
+
+type form = {
+  title?: string,
+  fields: array<field>,
+}
+
+type view = {
+  table: table,
+  form: form,
+}
+
+// Entity schema
 
 type entity = {
   slug: string,
   display_name: string,
   plural_display_name: string,
   endpoint_slug?: string,
-  table: table,
+  view: view,
+}
+
+// TODO move to Browser
+type generic_response_store<'a> = {
+  mutable response?: BrowserTypes.response,
+  mutable json?: BrowserTypes.response_body,
+  mutable array?: array<'a>
 }
 
 // Entity concrete types
@@ -122,31 +141,51 @@ let schema: schema = {
   },
   entity: {
     course: {
+      slug: "course",
       display_name: "curso",
       plural_display_name: "cursos",
-      slug: "course",
-      table: {
-        title: "Cursos",
-        headers: [ "Nome", ]
+      view: {
+        table: {
+          headers: [ "Nome", ]
+        },
+        form: {
+          fields: [ { label: "Nome", id: "name", kind: "text" } ],
+        }
       },
     },
     exercise_set: {
       display_name: "conjunto de exercícios",
       plural_display_name: "conjuntos de exercícios",
       slug: "exercise_set",
-      table: {
-        title: "Conjuntos",
-        headers: [ "Nome", ]
-      },
+      view: {
+        table: {
+          headers: [ "Nome", ]
+        },
+        form: {
+          fields: [ { label: "Nome", id: "name", kind: "text" } ],
+        }
+      }
     },
     exercise: {
       display_name: "exercícios",
       plural_display_name: "exercícios",
       slug: "exercise",
-      table: {
-        title: "Exercícios",
-        headers: [ "Instrução", "Conjunto" ]
-      },
+      view: {
+        table: {
+          headers: [ "Instrução", "Conjunto", ]
+        },
+        form: {
+          fields: [
+            { label: "Instrução", id: "instruction", kind: "text" },
+            {
+              label: "Conjunto",
+              id: "exercise_set",
+              kind: "select",
+              options: [],
+            },
+          ],
+        },
+      }
     },
   }
 }
@@ -170,4 +209,3 @@ let make_slug = (kind: slug_kind, entity: entity): string => {
   | Checkbox => `${entity.slug}_checkbox`
   }
 }
-

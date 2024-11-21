@@ -7,7 +7,7 @@ open Auth
 
 let make_header_row = (entity: Meta.entity): BrowserTypes.element => {
 
-  let fields = entity.table.headers
+  let headers = entity.view.table.headers
   let header_row = makeElement("tr")
 
   let checkbox_header = makeElement("th")
@@ -18,11 +18,11 @@ let make_header_row = (entity: Meta.entity): BrowserTypes.element => {
   appendChild(checkbox_header, select_all_checkbox)
   appendChild(header_row, checkbox_header)
 
-  Array.forEach(fields, field => {
-    let header = makeElement("th")
-    header.id = Some(Meta.make_slug(TableHeader, entity))
-    header.innerText = Some(field)
-    appendChild(header_row, header)
+  Array.forEach(headers, header => {
+    let element = makeElement("th")
+    element.id = Some(Meta.make_slug(TableHeader, entity))
+    element.innerText = Some(header)
+    appendChild(header_row, element)
   })
 
   let edit_header = makeElement("th")
@@ -136,14 +136,7 @@ let update_table = async (entity: Meta.entity): () => {
 let make_creation_form = (entity: Meta.entity): BrowserTypes.element => {
 
   let div = makeElement("div")
-
-  let fields: array<FormBuilder.field> = [
-    {
-      id: "name",
-      kind: "text",
-      label: "Nome:",
-    },
-  ]
+  let fields = entity.view.form.fields
 
   let header = makeElement("h2")
   header.innerText = Some(`Novo ${entity.display_name}`)

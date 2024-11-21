@@ -11,12 +11,12 @@ function populate_form() {
   var fields = [
     {
       id: "email",
-      kind: "email",
+      type: "email",
       label: "Email:"
     },
     {
       id: "password",
-      kind: "password",
+      type: "password",
       label: "Senha:"
     }
   ];

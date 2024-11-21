@@ -6,8 +6,8 @@
   font-family: Nunito, Tahoma, Verdana, sans-serif;
 }
 
-input {
-  margin-bottom: 10px;
+form input, select {
+  margin-bottom: 20px;
 }
 
 nav ul li {

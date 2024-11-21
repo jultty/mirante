@@ -99,42 +99,65 @@ let makeElement = (element: string): element => createElement(doc, element)
 
 module FormBuilder = {
 
-  type field = {
-    id: string,
-    kind: string,
-    label: string,
-  }
+  type field = Meta.field
 
   let make_field = (form, field: field) => {
 
-    let id: string = field.id
+    let label = makeElement("label")
+    label.for_ = Some(field.id)
+    label.innerText = field.label
 
-    let label = createElement(doc, "label")
-    label.for_ = Some(id)
-    label.innerText = Some(field.label)
     appendChild(form, label)
     appendChild(form,
-      createElement(doc, "br"))
+      makeElement("br"))
 
-    let input = createElement(doc, "input")
-    input.type_ = Some(field.kind)
-    input.id = Some(id)
-    input.name = Some(id)
-    appendChild(form, input)
-    appendChild(form,
-      createElement(doc, "br"))
+    if field.kind == "select" {
+
+      let select = makeElement("select")
+      select.id = Some(field.id)
+      select.name = Some(field.id)
+
+      let options = switch field.options {
+      | Some(options) => options
+      | None => []
+      }
+
+      Array.forEach(options, option => {
+        let element = makeElement("option")
+        element.value = Some(option)
+        appendChild(select, element)
+      })
+
+      appendChild(form, select)
+      appendChild(form,
+        makeElement("br"))
+
+    } else {
+      let input = makeElement("input")
+      input.type_ = Some(field.kind)
+      input.id = Some(field.id)
+      input.name = Some(field.id)
+
+      appendChild(form, input)
+      appendChild(form,
+        makeElement("br"))
+
+    }
   }
 
   let make_submit_button = (form: element, text: string) => {
-    let button = createElement(doc, "input")
+
+    let button = makeElement("input")
     button.type_ = Some("submit")
     button.value = Some(text)
+
     appendChild(form, button)
+
   }
 
   let make_form = (fields: array<field>, id: string): element => {
 
-    let form = createElement(doc, "form")
+    let form = makeElement("form")
 
     Array.forEach(fields, (field) => {
       make_field(form, field)
@@ -144,5 +167,6 @@ module FormBuilder = {
 
     form.id = Some(id)
     form
+
   }
 }

@@ -8,7 +8,7 @@ import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 function make_header_row(entity) {
-  var fields = entity.table.headers;
+  var headers = entity.view.table.headers;
   var header_row = Browser.makeElement("tr");
   var checkbox_header = Browser.makeElement("th");
   checkbox_header.id = "checkbox_header";
@@ -17,11 +17,11 @@ function make_header_row(entity) {
   select_all_checkbox.id = "select_all_checkbox";
   checkbox_header.appendChild(select_all_checkbox);
   header_row.appendChild(checkbox_header);
-  fields.forEach(function (field) {
-        var header = Browser.makeElement("th");
-        header.id = Meta.make_slug("TableHeader", entity);
-        header.innerText = field;
-        header_row.appendChild(header);
+  headers.forEach(function (header) {
+        var element = Browser.makeElement("th");
+        element.id = Meta.make_slug("TableHeader", entity);
+        element.innerText = header;
+        header_row.appendChild(element);
       });
   var edit_header = Browser.makeElement("th");
   edit_header.id = "edit_header";
@@ -97,11 +97,7 @@ async function update_table(entity) {
 
 function make_creation_form(entity) {
   var div = Browser.makeElement("div");
-  var fields = [{
-      id: "name",
-      kind: "text",
-      label: "Nome:"
-    }];
+  var fields = entity.view.form.fields;
   var header = Browser.makeElement("h2");
   header.innerText = "Novo " + entity.display_name;
   div.appendChild(header);
