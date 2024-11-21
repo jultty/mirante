@@ -38,7 +38,12 @@ let make_table = (entity: Meta.entity): BrowserTypes.element => {
   let div = makeElement("div")
 
   let header = makeElement("h2")
-  header.innerText = Some(entity.table.title)
+  header.innerText = Some(Util.to_sentence_title_case(
+    switch entity.view.table.title {
+    | Some(text) => text
+    | None => entity.plural_display_name
+    }
+  ))
   appendChild(div, header)
 
   let table = makeElement("table")

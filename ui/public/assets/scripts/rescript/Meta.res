@@ -3,7 +3,7 @@
 // Entity display
 
 type table = {
-  title: string,
+  title?: string,
   headers: array<string>,
 }
 

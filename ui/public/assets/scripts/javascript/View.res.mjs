@@ -2,6 +2,7 @@
 
 import * as Auth from "./Auth.res.mjs";
 import * as Meta from "./Meta.res.mjs";
+import * as Util from "./Util.res.mjs";
 import * as Browser from "./Browser.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
@@ -32,7 +33,8 @@ function make_header_row(entity) {
 function make_table(entity) {
   var div = Browser.makeElement("div");
   var header = Browser.makeElement("h2");
-  header.innerText = entity.table.title;
+  var text = entity.view.table.title;
+  header.innerText = Util.to_sentence_title_case(text !== undefined ? text : entity.plural_display_name);
   div.appendChild(header);
   var table = Browser.makeElement("table");
   table.id = Meta.make_slug("Table", entity);
