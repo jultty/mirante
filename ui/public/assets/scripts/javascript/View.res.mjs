@@ -7,7 +7,7 @@ import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
 function make_header_row(entity) {
-  var fields = entity.table_schema.headers;
+  var fields = entity.table.headers;
   var header_row = Browser.makeElement("tr");
   var checkbox_header = Browser.makeElement("th");
   checkbox_header.id = "checkbox_header";
@@ -19,7 +19,7 @@ function make_header_row(entity) {
   fields.forEach(function (field) {
         var header = Browser.makeElement("th");
         header.id = Meta.make_slug("TableHeader", entity);
-        header.innerText = field.display_text;
+        header.innerText = field;
         header_row.appendChild(header);
       });
   var edit_header = Browser.makeElement("th");
@@ -30,10 +30,9 @@ function make_header_row(entity) {
 }
 
 function make_table(entity) {
-  var options = entity.table_schema;
   var div = Browser.makeElement("div");
   var header = Browser.makeElement("h2");
-  header.innerText = options.table.header;
+  header.innerText = entity.table.title;
   div.appendChild(header);
   var table = Browser.makeElement("table");
   table.id = Meta.make_slug("Table", entity);

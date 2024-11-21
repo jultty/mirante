@@ -2,15 +2,9 @@
 
 // Entity display
 
-type table_options = {
-  header: string,
-}
-
-type header_data = { display_text: string, }
-
-type table_schema = {
-  table: table_options,
-  headers: array<header_data>,
+type table = {
+  title: string,
+  headers: array<string>,
 }
 
 // Entity schema
@@ -26,7 +20,7 @@ type entity = {
   display_name: string,
   plural_display_name: string,
   endpoint_slug?: string,
-  table_schema: table_schema,
+  table: table,
 }
 
 // Entity concrete types
@@ -131,46 +125,29 @@ let schema: schema = {
       display_name: "curso",
       plural_display_name: "cursos",
       slug: "course",
-      table_schema: {
-        table: {
-          header: "Cursos",
-        },
-        headers: [
-        {
-          display_text: "Nome",
-        },
-        ]
+      table: {
+        title: "Cursos",
+        headers: [ "Nome", ]
       },
     },
     exercise_set: {
       display_name: "conjunto de exercícios",
       plural_display_name: "conjuntos de exercícios",
       slug: "exercise_set",
-      table_schema: {
-        table: {
-          header: "Conjuntos",
-        },
-        headers: [
-        {
-          display_text: "Nome",
-        },
-        ]
+      table: {
+        title: "Conjuntos",
+        headers: [ "Nome", ]
       },
     },
     exercise: {
       display_name: "exercícios",
       plural_display_name: "exercícios",
       slug: "exercise",
-      table_schema: {
-        table: {
-          header: "Exercícios",
-        },
-        headers: [
-          { display_text: "Instrução" },
-          { display_text: "Conjunto" },
-        ]
+      table: {
+        title: "Exercícios",
+        headers: [ "Instrução", "Conjunto" ]
       },
-    }
+    },
   }
 }
 

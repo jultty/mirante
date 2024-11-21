@@ -45,43 +45,29 @@ var schema_entity = {
     slug: "course",
     display_name: "curso",
     plural_display_name: "cursos",
-    table_schema: {
-      table: {
-        header: "Cursos"
-      },
-      headers: [{
-          display_text: "Nome"
-        }]
+    table: {
+      title: "Cursos",
+      headers: ["Nome"]
     }
   },
   exercise_set: {
     slug: "exercise_set",
     display_name: "conjunto de exercícios",
     plural_display_name: "conjuntos de exercícios",
-    table_schema: {
-      table: {
-        header: "Conjuntos"
-      },
-      headers: [{
-          display_text: "Nome"
-        }]
+    table: {
+      title: "Conjuntos",
+      headers: ["Nome"]
     }
   },
   exercise: {
     slug: "exercise",
     display_name: "exercícios",
     plural_display_name: "exercícios",
-    table_schema: {
-      table: {
-        header: "Exercícios"
-      },
+    table: {
+      title: "Exercícios",
       headers: [
-        {
-          display_text: "Instrução"
-        },
-        {
-          display_text: "Conjunto"
-        }
+        "Instrução",
+        "Conjunto"
       ]
     }
   }

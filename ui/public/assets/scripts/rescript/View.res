@@ -7,7 +7,7 @@ open Auth
 
 let make_header_row = (entity: Meta.entity): BrowserTypes.element => {
 
-  let fields = entity.table_schema.headers
+  let fields = entity.table.headers
   let header_row = makeElement("tr")
 
   let checkbox_header = makeElement("th")
@@ -21,7 +21,7 @@ let make_header_row = (entity: Meta.entity): BrowserTypes.element => {
   Array.forEach(fields, field => {
     let header = makeElement("th")
     header.id = Some(Meta.make_slug(TableHeader, entity))
-    header.innerText = Some(field.display_text)
+    header.innerText = Some(field)
     appendChild(header_row, header)
   })
 
@@ -35,11 +35,10 @@ let make_header_row = (entity: Meta.entity): BrowserTypes.element => {
 
 let make_table = (entity: Meta.entity): BrowserTypes.element => {
 
-  let options = entity.table_schema
   let div = makeElement("div")
 
   let header = makeElement("h2")
-  header.innerText = Some(options.table.header)
+  header.innerText = Some(entity.table.title)
   appendChild(div, header)
 
   let table = makeElement("table")
