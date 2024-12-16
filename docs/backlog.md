@@ -4,7 +4,8 @@
 - [ ] Handle 400 errors on entity view
   - [ ] with tokens for accounts that were erased by a database wipe
     - works fine with no credentials at all in sessionStorage
-
+- [ ] Localize strings and docs
+ 
 ### Minor
 - [ ] Show error message on token expiration
 - [ ] Update footer status on authentication
@@ -16,3 +17,5 @@
   - [ ] development errors
     - messages in English
     - appears in console
+  - [ ] Option orders should be nullable and unique
+  - [ ] Leverage Hurl 6 random value generations
