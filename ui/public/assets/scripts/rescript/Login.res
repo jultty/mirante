@@ -3,7 +3,7 @@ open Browser
 
 // Populate form
 
-let populate_form = () => {
+let populate_form = async () => {
 
   let main = getElementByTag("main", "Login.main")
   clearChildren(main)
@@ -25,7 +25,7 @@ let populate_form = () => {
   header.innerText = Some("Login")
   appendChild(main, header)
 
-  let login_form = FormBuilder.make_form(fields, "login_form")
+  let login_form = await FormBuilder.make_form(fields, "login_form")
   appendChild(main, login_form)
 
 }
@@ -110,9 +110,9 @@ let login_handler = async (event) => {
 
 }
 
-let structure = async (_: event) => {
+let structure = async (_: event): unit => {
 
-  populate_form()
+  await populate_form()
 
   submitListen(
     getElement("login_form", "Login.addSubmitListener"),

@@ -4,6 +4,7 @@ import * as Auth from "./Auth.res.mjs";
 import * as Meta from "./Meta.res.mjs";
 import * as Util from "./Util.res.mjs";
 import * as Browser from "./Browser.res.mjs";
+import * as FormBuilder from "./FormBuilder.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
@@ -41,6 +42,7 @@ function make_table(entity) {
   var header_row = make_header_row(entity);
   table.appendChild(header_row);
   div.appendChild(table);
+  div.appendChild(Browser.makeElement("br"));
   var delete_button = Browser.makeElement("button");
   delete_button.id = "delete_button";
   delete_button.innerText = "Excluir selecionados";
@@ -95,13 +97,13 @@ async function update_table(entity) {
       });
 }
 
-function make_creation_form(entity) {
+async function make_creation_form(entity) {
   var div = Browser.makeElement("div");
   var fields = entity.view.form.fields;
   var header = Browser.makeElement("h2");
   header.innerText = "Novo " + entity.display_name;
   div.appendChild(header);
-  var form = Browser.FormBuilder.make_form(fields, entity.slug + "_creation_form");
+  var form = await FormBuilder.make_form(fields, entity.slug + "_creation_form");
   div.appendChild(form);
   return div;
 }
@@ -189,7 +191,7 @@ function make_nav_handler(entity) {
       return ;
     }
     var table = make_table(entity);
-    var form = make_creation_form(entity);
+    var form = await make_creation_form(entity);
     Browser.submitListen(form, make_creation_handler(entity));
     var main = Browser.getElementByTag("main", "View.make_nav_handler main");
     Browser.clearChildren(main);

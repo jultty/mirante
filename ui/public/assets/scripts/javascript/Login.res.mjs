@@ -2,10 +2,11 @@
 
 import * as Meta from "./Meta.res.mjs";
 import * as Browser from "./Browser.res.mjs";
+import * as FormBuilder from "./FormBuilder.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
-function populate_form() {
+async function populate_form() {
   var main = Browser.getElementByTag("main", "Login.main");
   Browser.clearChildren(main);
   var fields = [
@@ -23,7 +24,7 @@ function populate_form() {
   var header = Browser.makeElement("h2");
   header.innerText = "Login";
   main.appendChild(header);
-  var login_form = Browser.FormBuilder.make_form(fields, "login_form");
+  var login_form = await FormBuilder.make_form(fields, "login_form");
   main.appendChild(login_form);
 }
 
@@ -96,7 +97,7 @@ async function login_handler($$event) {
 }
 
 async function structure(param) {
-  populate_form();
+  await populate_form();
   return Browser.submitListen(Browser.getElement("login_form", "Login.addSubmitListener"), login_handler);
 }
 

@@ -53,6 +53,8 @@ let make_table = (entity: Meta.entity): BrowserTypes.element => {
   appendChild(table, header_row)
   appendChild(div, table)
 
+  appendChild(div, makeElement("br"))
+
   let delete_button = makeElement("button")
   delete_button.id = Some("delete_button")
   delete_button.innerText = Some("Excluir selecionados")
@@ -132,7 +134,7 @@ let update_table = async (entity: Meta.entity): () => {
 
 // Creation form
 
-let make_creation_form = (entity: Meta.entity): BrowserTypes.element => {
+let make_creation_form = async (entity: Meta.entity): BrowserTypes.element => {
 
   let div = makeElement("div")
   let fields = entity.view.form.fields
@@ -141,7 +143,7 @@ let make_creation_form = (entity: Meta.entity): BrowserTypes.element => {
   header.innerText = Some(`Novo ${entity.display_name}`)
   appendChild(div, header)
 
-  let form = FormBuilder.make_form(fields, `${entity.slug}_creation_form`)
+  let form = await FormBuilder.make_form(fields, `${entity.slug}_creation_form`)
   appendChild(div, form)
 
   div
@@ -240,7 +242,7 @@ let make_nav_handler = (entity: Meta.entity): (BrowserTypes.event => promise<uni
     if Option.isSome(credentials) {
 
       let table = make_table(entity)
-      let form = make_creation_form(entity)
+      let form = await make_creation_form(entity)
 
       submitListen(form, make_creation_handler(entity))
 

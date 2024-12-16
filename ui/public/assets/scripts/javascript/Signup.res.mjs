@@ -2,10 +2,11 @@
 
 import * as Meta from "./Meta.res.mjs";
 import * as Browser from "./Browser.res.mjs";
+import * as FormBuilder from "./FormBuilder.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 import * as Caml_js_exceptions from "rescript/lib/es6/caml_js_exceptions.js";
 
-function populate_form() {
+async function populate_form() {
   var main = Browser.getElementByTag("main", "Signup.main");
   Browser.clearChildren(main);
   var fields = [
@@ -23,7 +24,7 @@ function populate_form() {
   var header = Browser.makeElement("h2");
   header.innerText = "Criar conta";
   main.appendChild(header);
-  var signup_form = Browser.FormBuilder.make_form(fields, "signup_form");
+  var signup_form = await FormBuilder.make_form(fields, "signup_form");
   main.appendChild(signup_form);
 }
 
@@ -104,7 +105,7 @@ async function signup_handler($$event) {
 }
 
 async function structure(param) {
-  populate_form();
+  await populate_form();
   return Browser.submitListen(Browser.getElement("signup_form", "Signup.addSubmitListener"), signup_handler);
 }
 
