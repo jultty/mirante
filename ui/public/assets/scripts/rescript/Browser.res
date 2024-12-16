@@ -15,7 +15,6 @@ open BrowserTypes
 @send external before: (element, element) => () = "before"
 @send external preventDefault: (event) => unit = "preventDefault"
 @send external parseForm: (object, object) => AuthTypes.credentials = "fromEntries"
-
 @new external parseFields: element => object = "FormData"
 
 %%private(

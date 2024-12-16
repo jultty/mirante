@@ -33,36 +33,69 @@ let submit_handler = async (event) => {
   preventDefault(event)
 
   let dialog: element = getElement("user_dialog", "Responder.dialog")
-  let response_form: element = getElement(
-    "response_form", "Responder.submit_handler")
+  let response_form: element = getElement("response_form", "Responder.submit_handler")
 
+  let token = Auth.getCredentials().user_token
+
+  let response_store: BrowserTypes.response_store<'a> = {}
   dialog.innerText = Some("")
 
-  let form_data = parseForm(object, parseFields(response_form))
-  Console.log(form_data)
+  let form_children: array<element> = Option.getExn(response_form.children, ~message="TODO")
+  let chosen_options: array<element> = []
 
-    let token = Auth.getCredentials().user_token
-
-    let post_options = {
-      "method": "POST",
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      "body": JSON.stringifyAny(form_data),
+  // TODO a dedicated data structure could eliminate this cursed arrow looping
+  for i in 0 to Array.length(form_children) - 1 {
+    let child = Option.getExn(form_children[i], ~message="TODO")
+    if Option.getExn(child.nodeName, ~message="TODO") == "FIELDSET" {
+      let fieldset_children: array<element> = Option.getExn(child.children)
+      for i in 0 to Array.length(fieldset_children) - 1 {
+        let child = Option.getExn(fieldset_children[i], ~message="TODO")
+        if Option.getExn(child.nodeName) == "P" {
+          let options: array<element> = Option.getExn(child.children)
+          for i in 0 to Array.length(options) - 1 {
+            let option = Option.getExn(options[i])
+            if Option.isSome(option.type_) {
+              if Option.getExn(option.type_) == "radio" &&
+              Option.getExn(option.checked, ~message="TODO") {
+                Console.log(option)
+                Array.push(chosen_options, option)
+              }
+            }
+          }
+        }
+      }
     }
+  }
 
-   let response_store: BrowserTypes.response_store<'a> = {}
+    let total = Array.length(chosen_options)
 
    try {
 
-     let response = await fetch(
-       Meta.make_endpoint(Meta.schema.entity.response), post_options)
-     response_store.response = Some(await response->Response.clone)
-     response_store.json = Some(await response->Response.json)
+    for i in 0 to total - 1 {
+      let option = Option.getExn(chosen_options[i],
+        ~message=`[Responder.submit_handler] Option on index ${string_of_int(i)} is None`)
 
-     Console.log(response_store.response)
-     Console.log(response_store.json)
+      let body = {
+        "option": option.value
+        // TODO: place field
+      }
+
+      let post_options = {
+        "method": "POST",
+        "headers": {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+        "body": JSON.stringifyAny(body),
+      }
+
+      let response = await fetch(
+        Meta.make_endpoint(Meta.schema.entity.response), post_options)
+      response_store.response = Some(await response->Response.clone)
+
+      Console.log(response_store.response)
+
+    }
 
    } catch {
      | error => {
@@ -117,8 +150,6 @@ let populate_form = async (id: string): unit => {
   let related = await fetchRelated(url, get_options)
   let exercises = await related->Response.json
 
-  Console.log(exercises)
-
   for i in 0 to Array.length(exercises) - 1 {
     let exercise: Meta.concrete_entity = Option.getExn(exercises[i],
       ~message=`[Responder.populate_form] Could not find exercise on id ${string_of_int(i)}`)
@@ -134,7 +165,6 @@ let populate_form = async (id: string): unit => {
       Meta.schema.entity.option.slug ++ `?exercise=eq.${exercise.database_id}`
     let related = await fetchRelated(url, get_options)
     let options: array<Meta.concrete_entity> = await related->Response.json
-    Console.log(options)
 
     for i in 0 to Array.length(options) - 1 {
       let option = Option.getExn(options[i],
@@ -143,7 +173,7 @@ let populate_form = async (id: string): unit => {
       let radio_wrapper = makeElement("p")
       let input = makeElement("input")
       input.type_ = Some("radio")
-      input.value = Some(id)
+      input.value = Some(option.database_id)
       input.id = Some(id)
       let label = makeElement("label")
       label.innerText = Some(Option.getExn(option.content,

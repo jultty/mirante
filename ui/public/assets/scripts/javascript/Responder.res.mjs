@@ -30,25 +30,52 @@ async function submit_handler($$event) {
   $$event.preventDefault();
   var dialog = Browser.getElement("user_dialog", "Responder.dialog");
   var response_form = Browser.getElement("response_form", "Responder.submit_handler");
-  dialog.innerText = "";
-  var form_data = Object.fromEntries(new FormData(response_form));
-  console.log(form_data);
   var token = Auth.getCredentials().token;
-  var post_options = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify(form_data)
-  };
   var response_store = {};
+  dialog.innerText = "";
+  var form_children = Core__Option.getExn(response_form.children, "TODO");
+  var chosen_options = [];
+  for(var i = 0 ,i_finish = form_children.length; i < i_finish; ++i){
+    var child = Core__Option.getExn(form_children[i], "TODO");
+    if (Core__Option.getExn(child.nodeName, "TODO") === "FIELDSET") {
+      var fieldset_children = Core__Option.getExn(child.children, undefined);
+      for(var i$1 = 0 ,i_finish$1 = fieldset_children.length; i$1 < i_finish$1; ++i$1){
+        var child$1 = Core__Option.getExn(fieldset_children[i$1], "TODO");
+        if (Core__Option.getExn(child$1.nodeName, undefined) === "P") {
+          var options = Core__Option.getExn(child$1.children, undefined);
+          for(var i$2 = 0 ,i_finish$2 = options.length; i$2 < i_finish$2; ++i$2){
+            var option = Core__Option.getExn(options[i$2], undefined);
+            if (Core__Option.isSome(option.type) && Core__Option.getExn(option.type, undefined) === "radio" && Core__Option.getExn(option.checked, "TODO")) {
+              console.log(option);
+              chosen_options.push(option);
+            }
+            
+          }
+        }
+        
+      }
+    }
+    
+  }
+  var total = chosen_options.length;
   try {
-    var response = await globalThis.fetch(Meta.make_endpoint(Meta.schema.entity.response), post_options);
-    response_store.response = await response.clone();
-    response_store.json = await response.json();
-    console.log(response_store.response);
-    console.log(response_store.json);
+    for(var i$3 = 0; i$3 < total; ++i$3){
+      var option$1 = Core__Option.getExn(chosen_options[i$3], "[Responder.submit_handler] Option on index " + String(i$3) + " is None");
+      var body = {
+        option: option$1.value
+      };
+      var post_options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(body)
+      };
+      var response = await globalThis.fetch(Meta.make_endpoint(Meta.schema.entity.response), post_options);
+      response_store.response = await response.clone();
+      console.log(response_store.response);
+    }
   }
   catch (raw_error){
     var error = Caml_js_exceptions.internalToOCamlException(raw_error);
@@ -99,7 +126,6 @@ async function populate_form(id) {
   var url = Meta.schema.system.constants.root_url + "/" + Meta.schema.entity.exercise.slug + ("?set=eq." + id);
   var related = await globalThis.fetch(url, get_options);
   var exercises = await related.json();
-  console.log(exercises);
   for(var i = 0 ,i_finish = exercises.length; i < i_finish; ++i){
     var exercise = Core__Option.getExn(exercises[i], "[Responder.populate_form] Could not find exercise on id " + String(i));
     var fieldset = Browser.makeElement("fieldset");
@@ -109,14 +135,13 @@ async function populate_form(id) {
     var url$1 = Meta.schema.system.constants.root_url + "/" + Meta.schema.entity.option.slug + ("?exercise=eq." + exercise.id);
     var related$1 = await globalThis.fetch(url$1, get_options);
     var options = await related$1.json();
-    console.log(options);
     for(var i$1 = 0 ,i_finish$1 = options.length; i$1 < i_finish$1; ++i$1){
       var option = Core__Option.getExn(options[i$1], "[Responder.populate_form] Could not find option on id " + String(i$1));
       var id$1 = "exercise_" + exercise.id + "_option_" + option.id;
       var radio_wrapper = Browser.makeElement("p");
       var input = Browser.makeElement("input");
       input.type = "radio";
-      input.value = id$1;
+      input.value = option.id;
       input.id = id$1;
       var label = Browser.makeElement("label");
       label.innerText = Core__Option.getExn(option.content, "[Responder.submit_handler] Option with database id " + option.id + " does not have content");

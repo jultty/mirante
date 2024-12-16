@@ -27,6 +27,8 @@ type rec element = {
   children?: array<element>,
   mutable action?: string,
   mutable method?: string,
+  nodeName?: string,
+  checked?: bool,
 }
 
 module Response = {
@@ -71,4 +73,3 @@ type http_options = {
 @val @scope("globalThis")
 external fetchRelated: (string, 'params) =>
   promise<Response.t<array<'a>, _, _>> = "fetch"
-
