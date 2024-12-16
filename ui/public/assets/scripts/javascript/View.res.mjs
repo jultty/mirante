@@ -75,7 +75,7 @@ async function update_table(entity) {
   var found_array = response_store.array;
   var array = found_array !== undefined ? found_array : [];
   for(var i = 0 ,i_finish = array.length; i < i_finish; ++i){
-    var element = Core__Option.getExn(array[i], "[View.update_table]\n      Element on index " + String(i) + " should not be None");
+    var element = Core__Option.getExn(array[i], "[View.update_table]" + ("Element on index " + String(i) + " should not be None"));
     var row = Browser.makeElement("tr");
     var checkbox_cell = Browser.makeElement("td");
     var checkbox = Browser.makeElement("input");
@@ -84,7 +84,7 @@ async function update_table(entity) {
     checkbox.class = "select_row_checkbox";
     checkbox_cell.appendChild(checkbox);
     row.appendChild(checkbox_cell);
-    var name = Core__Option.getOr(element.name, Core__Option.getOr(element.instruction, "Item sem nome"));
+    var name = FormBuilder.find_display_name(element, entity);
     var name$1 = name.length > 70 ? name.slice(0, 70) + "..." : name;
     var name_cell = Browser.makeElement("td");
     name_cell.innerText = name$1;
@@ -92,21 +92,91 @@ async function update_table(entity) {
     if (Core__Option.isSome(entity.view.table.columns)) {
       var columns = Core__Option.getExn(entity.view.table.columns, undefined);
       for(var i$1 = 0 ,i_finish$1 = columns.length; i$1 < i_finish$1; ++i$1){
-        var column = Core__Option.getExn(columns[i$1], "[View.update_table]\n          Column on index " + String(i$1) + " should not be None");
-        if (column.kind === "ForeignString") {
-          var reference = Core__Option.getExn(column.options.reference, "[View.update_table]\n            Reference not defined for ForeignString column " + column.display_name);
-          var object_of_record = function (record) {
-            console.log(record);
-            return Core__Option.getExn(record.set, undefined);
-          };
-          var relation_id = object_of_record(element);
+        var column = Core__Option.getExn(columns[i$1], "[View.update_table]" + ("Column on index " + String(i$1) + " should not be None"));
+        if (column.kind === "Integer") {
+          var extract_integer = (function(column){
+          return function extract_integer(record) {
+            var error_message = "[View.update_table]Could not find an integer field for column " + column.display_name;
+            var match = entity.slug;
+            if (match === "option") {
+              var place = record.place;
+              if (place !== undefined) {
+                return String(place);
+              }
+              throw {
+                    RE_EXN_ID: Meta.IncompleteSchema,
+                    _1: error_message,
+                    Error: new Error()
+                  };
+            }
+            throw {
+                  RE_EXN_ID: Meta.IncompleteSchema,
+                  _1: error_message,
+                  Error: new Error()
+                };
+          }
+          }(column));
+          var cell = Browser.makeElement("td");
+          cell.innerText = extract_integer(element);
+          row.appendChild(cell);
+        } else if (column.kind === "Boolean") {
+          var extract_boolean = (function(column){
+          return function extract_boolean(record) {
+            var error_message = "[View.update_table]Could not find a boolean field for column " + column.display_name;
+            var match = entity.slug;
+            if (match === "option") {
+              var correct = record.correct;
+              if (correct !== undefined) {
+                return correct;
+              }
+              throw {
+                    RE_EXN_ID: Meta.IncompleteSchema,
+                    _1: error_message,
+                    Error: new Error()
+                  };
+            }
+            throw {
+                  RE_EXN_ID: Meta.IncompleteSchema,
+                  _1: error_message,
+                  Error: new Error()
+                };
+          }
+          }(column));
+          var cell$1 = Browser.makeElement("td");
+          cell$1.innerText = extract_boolean(element) ? "Sim" : "Não";
+          row.appendChild(cell$1);
+        } else if (column.kind === "ForeignString") {
+          var options = Core__Option.getExn(column.options, "[View.update_table]Reference options not defined for ForeignString column " + column.display_name);
+          var reference = Core__Option.getExn(options.reference, "[View.update_table]Reference not defined for ForeignString column " + column.display_name);
+          var extract_id = (function(column,options){
+          return function extract_id(record) {
+            var error_message = "[View.update_table]Could not match an id field for column " + column.display_name;
+            var match = options.concrete_field;
+            switch (match) {
+              case "course" :
+                  return Core__Option.getExn(record.course, error_message);
+              case "exercise" :
+                  return Core__Option.getExn(record.exercise, error_message);
+              case "set" :
+                  return Core__Option.getExn(record.set, error_message);
+              default:
+                throw {
+                      RE_EXN_ID: Meta.IncompleteSchema,
+                      _1: error_message,
+                      Error: new Error()
+                    };
+            }
+          }
+          }(column,options));
+          var relation_id = extract_id(element);
           var get_options$1 = Auth.make_get_options();
           var related = await globalThis.fetch(Meta.schema.system.constants.root_url + "/" + reference + "?id=eq." + String(relation_id), get_options$1);
           var array$1 = await related.json();
-          var found_relation = Core__Option.getExn(array$1[0], "[View.update_table] First element in related response array not found");
-          var cell = Browser.makeElement("td");
-          cell.innerText = found_relation.name;
-          row.appendChild(cell);
+          var found_relation = Core__Option.getExn(array$1[0], "[View.update_table] No element found for relation" + options.concrete_field);
+          var name$2 = FormBuilder.find_display_name(found_relation, undefined);
+          var cell$2 = Browser.makeElement("td");
+          cell$2.innerText = name$2;
+          row.appendChild(cell$2);
         }
         
       }
@@ -126,7 +196,7 @@ async function make_creation_form(entity) {
   var div = Browser.makeElement("div");
   var fields = entity.view.form.fields;
   var header = Browser.makeElement("h2");
-  header.innerText = "Novo " + entity.display_name;
+  header.innerText = "Criar " + entity.display_name;
   div.appendChild(header);
   var form = await FormBuilder.make_form(fields, entity.slug + "_creation_form");
   div.appendChild(form);

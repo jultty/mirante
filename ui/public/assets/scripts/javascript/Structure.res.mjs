@@ -35,6 +35,10 @@ function create_menu() {
     {
       name: "Exercícios",
       handler: View.make_nav_handler(entities.exercise)
+    },
+    {
+      name: "Alternativas",
+      handler: View.make_nav_handler(entities.option)
     }
   ];
   var menu = Browser.makeElement("nav");

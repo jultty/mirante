@@ -5,15 +5,17 @@
 type relation_details = {
   reference?: string,
   display_field: string,
+  concrete_field: string,
   array?: array<string>,
 }
 
-type column_kind = ForeignString | Boolean
+type column_kind = ForeignString | Boolean | Integer
 
 type table_column = {
   display_name: string,
   kind: column_kind,
-  options: relation_details,
+  value?: string,
+  options?: relation_details,
 }
 
 type table = {
@@ -63,7 +65,12 @@ type concrete_entity = {
   @as("id") database_id: string,
   name?: string,
   instruction?: string,
+  content?: string,
   set?: int,
+  course?: int,
+  exercise?: int,
+  correct?: bool,
+  place?: int,
 }
 
 type course = {
@@ -78,7 +85,7 @@ type entity_schema = {
   course: entity,
   exercise_set: entity,
   exercise: entity,
-  option?: entity,
+  option: entity,
   response?: entity,
   account?: entity,
   version?: entity,
@@ -174,7 +181,19 @@ let schema: schema = {
       slug: "exercise_set",
       view: {
         table: {
-          headers: [ "Nome", ]
+          headers: [ "Nome", "Curso", ],
+          columns: [
+            {
+              display_name: "Curso",
+              kind: ForeignString,
+              options: {
+                display_field: "name",
+                reference: "course",
+                concrete_field: "course",
+                array: [],
+              }
+            },
+          ],
         },
         form: {
           fields: [
@@ -185,6 +204,7 @@ let schema: schema = {
             kind: "select",
             relation_details: {
               reference: "course",
+              concrete_field: "course",
               display_field: "name",
               array: [],
             },
@@ -207,6 +227,7 @@ let schema: schema = {
             options: {
               display_field: "name",
               reference: "exercise_set",
+              concrete_field: "set",
               array: [],
             }
           }
@@ -220,8 +241,9 @@ let schema: schema = {
               id: "set",
               kind: "select",
               relation_details: {
-                reference: "exercise_set",
                 display_field: "name",
+                reference: "exercise_set",
+                concrete_field: "set",
                 array: [],
               },
             },
@@ -229,8 +251,59 @@ let schema: schema = {
         },
       }
     },
+    option: {
+      display_name: "alternativa",
+      plural_display_name: "alternativas",
+      slug: "option",
+      view: {
+        table: {
+          headers: [ "Conteúdo", "Exercício", "Correta", "Posição", ],
+          columns: [
+          {
+            display_name: "Exercício",
+            kind: ForeignString,
+            options: {
+              display_field: "instruction",
+              reference: "exercise",
+              concrete_field: "exercise",
+              array: [],
+            }
+          },
+          {
+            display_name: "Correta",
+            value: "correct",
+            kind: Boolean,
+          },
+          {
+            display_name: "Posição",
+            kind: Integer,
+          },
+          ],
+        },
+        form: {
+          fields: [
+          { label: "Conteúdo", id: "content", kind: "text" },
+          {
+            label: "Exercício",
+            id: "exercise",
+            kind: "select",
+            relation_details: {
+              reference: "exercise",
+              display_field: "instruction",
+              concrete_field: "instruction",
+              array: [],
+            },
+          },
+          { label: "Correta", id: "correct", kind: "checkbox" },
+          { label: "Posição", id: "place", kind: "integer" },
+          ],
+        },
+      }
+    },
   }
 }
+
+exception IncompleteSchema(string)
 
 // Helper functions
 

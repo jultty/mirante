@@ -5,6 +5,36 @@ import * as Meta from "./Meta.res.mjs";
 import * as Browser from "./Browser.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 
+function find_display_name(element, entity) {
+  var error_reference = entity !== undefined ? "entity" + entity.display_name : "concrete entity with id " + element.id;
+  var name = element.name;
+  var name$1;
+  if (name !== undefined) {
+    name$1 = name;
+  } else {
+    var instruction = element.instruction;
+    if (instruction !== undefined) {
+      name$1 = "(" + element.id + ") " + instruction;
+    } else {
+      var content = element.content;
+      if (content !== undefined) {
+        name$1 = "(" + element.id + ") " + content;
+      } else {
+        throw {
+              RE_EXN_ID: Meta.IncompleteSchema,
+              _1: "[FormBuilder.update_table]Could not find a suitable name for " + error_reference,
+              Error: new Error()
+            };
+      }
+    }
+  }
+  if (name$1.length > 30) {
+    return name$1.slice(0, 30) + "…";
+  } else {
+    return name$1;
+  }
+}
+
 async function make_field(form, field) {
   var label = Browser.makeElement("label");
   label.for = field.id;
@@ -21,9 +51,10 @@ async function make_field(form, field) {
     select.id = field.id;
     select.name = field.id;
     array.forEach(function (option) {
+          var name = find_display_name(option, undefined);
           var element = Browser.makeElement("option");
           element.value = option.id;
-          element.innerText = option.name;
+          element.innerText = name;
           select.appendChild(element);
         });
     form.appendChild(select);
@@ -57,6 +88,7 @@ async function make_form(fields, id) {
 }
 
 export {
+  find_display_name ,
   make_field ,
   make_submit_button ,
   make_form ,

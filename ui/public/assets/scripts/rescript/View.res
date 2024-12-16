@@ -106,8 +106,8 @@ let update_table = async (entity: Meta.entity): () => {
   for i in 0 to Array.length(array) - 1 {
 
     let element = Option.getExn(array[i],
-    ~message=`[View.update_table]
-      Element on index ${string_of_int(i)} should not be None`)
+    ~message=`[View.update_table]` ++
+      `Element on index ${string_of_int(i)} should not be None`)
 
     let row = makeElement("tr")
 
@@ -119,9 +119,7 @@ let update_table = async (entity: Meta.entity): () => {
     appendChild(checkbox_cell, checkbox)
     appendChild(row, checkbox_cell)
 
-    let name = Option.getOr(element.name, Option.getOr(
-        element.instruction, "Item sem nome")
-    )
+    let name = FormBuilder.find_display_name(~element, ~entity)
 
     let name = if String.length(name) > 70 {
       String.slice(name, ~start=0, ~end=70) ++ "..."
@@ -135,31 +133,90 @@ let update_table = async (entity: Meta.entity): () => {
 
     if Option.isSome(entity.view.table.columns) {
 
-      let columns = Option.getExn(entity.view.table.columns) // as checked above
+      let columns = Option.getExn(entity.view.table.columns)
 
       for i in 0 to Array.length(columns) - 1 {
 
         let column = Option.getExn(columns[i],
-          ~message=`[View.update_table]
-          Column on index ${string_of_int(i)} should not be None`)
+          ~message=`[View.update_table]` ++
+          `Column on index ${string_of_int(i)} should not be None`)
 
-        // Still adding kinds
-        // Done: ForeignString
-
-        if column.kind == ForeignString {
-
-          let reference = Option.getExn(column.options.reference,
-            ~message=`[View.update_table]
-            Reference not defined for ForeignString column ${column.display_name}`)
+        if column.kind == Integer {
 
           // TODO abstract further
-          let object_of_record = (record: Meta.concrete_entity) => {
-            Console.log(record)
-            Option.getExn(record.set)
+          let extract_integer = (record: Meta.concrete_entity): string => {
+
+            let error_message =
+              `[View.update_table]` ++
+              `Could not find an integer field for column ${column.display_name}`
+
+            switch entity.slug {
+            | "option" =>
+              switch record {
+              | { place: place, _ } => string_of_int(place)
+              | _ => raise (Meta.IncompleteSchema(error_message))
+              }
+            | _ => raise (Meta.IncompleteSchema(error_message))
+            }
           }
 
+          let cell = makeElement("td")
+          cell.innerText = Some(extract_integer(element))
+          appendChild(row, cell)
+
+        } else if column.kind == Boolean {
+
           // TODO abstract further
-          let relation_id = object_of_record(element)
+          let extract_boolean = (record: Meta.concrete_entity): bool => {
+
+            let error_message =
+              `[View.update_table]` ++
+              `Could not find a boolean field for column ${column.display_name}`
+
+            switch entity.slug {
+            | "option" =>
+              switch record {
+              | { correct: correct, _ } => correct
+              | _ => raise (Meta.IncompleteSchema(error_message))
+              }
+            | _ => raise (Meta.IncompleteSchema(error_message))
+            }
+          }
+
+          let cell = makeElement("td")
+          cell.innerText = Some(
+            if extract_boolean(element) { "Sim" } else { "Não" }
+          )
+          appendChild(row, cell)
+
+        } else if column.kind == ForeignString {
+
+          let options = Option.getExn(column.options,
+            ~message=`[View.update_table]` ++
+            `Reference options not defined for ForeignString column ` ++
+            column.display_name
+          )
+
+          let reference = Option.getExn(options.reference,
+            ~message=`[View.update_table]` ++
+            `Reference not defined for ForeignString column ${column.display_name}`)
+
+          // TODO abstract further
+          let extract_id = (record: Meta.concrete_entity) => {
+
+            let error_message =
+              `[View.update_table]` ++
+              `Could not match an id field for column ${column.display_name}`
+
+            switch options.concrete_field {
+            | "set" => Option.getExn(record.set, ~message=error_message)
+            | "course" => Option.getExn(record.course, ~message=error_message)
+            | "exercise" => Option.getExn(record.exercise, ~message=error_message)
+            | _ => raise (Meta.IncompleteSchema(error_message))
+            }
+          }
+
+          let relation_id = extract_id(element)
 
           let get_options = Auth.make_get_options()
 
@@ -167,16 +224,21 @@ let update_table = async (entity: Meta.entity): () => {
             Meta.schema.system.constants.root_url ++ "/" ++ reference ++ "?id=eq." ++ string_of_int(relation_id), get_options)
           let array = await related->Response.json
 
-          let found_relation = Option.getExn(array[0], ~message=`[View.update_table] First element in related response array not found`)
+          let found_relation: Meta.concrete_entity =
+            Option.getExn(array[0], ~message=
+            `[View.update_table] No element found for relation` ++
+            options.concrete_field
+          )
+
+          let name = FormBuilder.find_display_name(~element=found_relation)
 
           let cell = makeElement("td")
-          cell.innerText = found_relation.name
+          cell.innerText = Some(name)
           appendChild(row, cell)
 
+          }
         }
       }
-    }
-
     //
 
     let edit_cell = makeElement("td")
@@ -186,7 +248,6 @@ let update_table = async (entity: Meta.entity): () => {
     edit_button.class = Some("edit_row_button")
     appendChild(edit_cell, edit_button)
     appendChild(row, edit_cell)
-
     appendChild(table, row)
   }
 }
@@ -199,7 +260,7 @@ let make_creation_form = async (entity: Meta.entity): BrowserTypes.element => {
   let fields = entity.view.form.fields
 
   let header = makeElement("h2")
-  header.innerText = Some(`Novo ${entity.display_name}`)
+  header.innerText = Some(`Criar ${entity.display_name}`)
   appendChild(div, header)
 
   let form = await FormBuilder.make_form(fields, `${entity.slug}_creation_form`)
