@@ -67,11 +67,23 @@ var schema_entity = {
         headers: ["Nome"]
       },
       form: {
-        fields: [{
+        fields: [
+          {
             id: "name",
             type: "text",
             label: "Nome"
-          }]
+          },
+          {
+            id: "course",
+            type: "select",
+            label: "Curso",
+            options: {
+              reference: "course",
+              display_field: "name",
+              array: []
+            }
+          }
+        ]
       }
     }
   },

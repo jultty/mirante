@@ -3,6 +3,8 @@ create table mirante.exercise_set (
 
   name text not null,
 
+  course int references course(id) not null,
+
   creation_date timestamptz not null default now(),
   creation_user name not null default current_user,
   enabled boolean not null default true

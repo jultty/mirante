@@ -168,7 +168,19 @@ let schema: schema = {
           headers: [ "Nome", ]
         },
         form: {
-          fields: [ { label: "Nome", id: "name", kind: "text" } ],
+          fields: [
+          { label: "Nome", id: "name", kind: "text" } ,
+          {
+            label: "Curso",
+            id: "course",
+            kind: "select",
+            options: {
+              reference: "course",
+              display_field: "name",
+              array: [],
+            },
+          },
+          ],
         }
       }
     },
@@ -189,7 +201,6 @@ let schema: schema = {
               kind: "select",
               options: {
                 reference: "exercise_set",
-                // what column in the foreign table should be used as a display name
                 display_field: "name",
                 array: [],
               },
