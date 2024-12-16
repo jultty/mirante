@@ -73,58 +73,6 @@ function makeElement(element) {
   return document.createElement(element);
 }
 
-function make_field(form, field) {
-  var label = document.createElement("label");
-  label.for = field.id;
-  label.innerText = field.label;
-  form.appendChild(label);
-  form.appendChild(document.createElement("br"));
-  if (field.type === "select") {
-    var select = document.createElement("select");
-    select.id = field.id;
-    select.name = field.id;
-    var options = field.options;
-    var options$1 = options !== undefined ? options : [];
-    options$1.forEach(function (option) {
-          var element = document.createElement("option");
-          element.value = option;
-          select.appendChild(element);
-        });
-    form.appendChild(select);
-    form.appendChild(document.createElement("br"));
-    return ;
-  }
-  var input = document.createElement("input");
-  input.type = field.type;
-  input.id = field.id;
-  input.name = field.id;
-  form.appendChild(input);
-  form.appendChild(document.createElement("br"));
-}
-
-function make_submit_button(form, text) {
-  var button = document.createElement("input");
-  button.type = "submit";
-  button.value = text;
-  form.appendChild(button);
-}
-
-function make_form(fields, id) {
-  var form = document.createElement("form");
-  fields.forEach(function (field) {
-        make_field(form, field);
-      });
-  make_submit_button(form, "Enviar");
-  form.id = id;
-  return form;
-}
-
-var FormBuilder = {
-  make_field: make_field,
-  make_submit_button: make_submit_button,
-  make_form: make_form
-};
-
 export {
   ElementNotFound ,
   CredentialsNotFound ,
@@ -139,6 +87,5 @@ export {
   retrieve ,
   store ,
   makeElement ,
-  FormBuilder ,
 }
 /* No side effect */
