@@ -25,6 +25,8 @@ type rec element = {
   @as("for") mutable for_?: string,
   @as("type") mutable type_?: string,
   children?: array<element>,
+  mutable action?: string,
+  mutable method?: string,
 }
 
 module Response = {

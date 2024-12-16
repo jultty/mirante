@@ -210,6 +210,19 @@ var schema_entity = {
         ]
       }
     }
+  },
+  response: {
+    slug: "response",
+    display_name: "resposta",
+    plural_display_name: "respostas",
+    view: {
+      table: {
+        headers: []
+      },
+      form: {
+        fields: []
+      }
+    }
   }
 };
 

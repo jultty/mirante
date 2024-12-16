@@ -79,7 +79,7 @@ function make_submit_button(form, text) {
 async function make_form(fields, id) {
   var form = Browser.makeElement("form");
   for(var i = 0 ,i_finish = fields.length; i < i_finish; ++i){
-    var field = Core__Option.getExn(fields[i], "[FormBuilder.make_form] Field on index " + String(i) + " should not be None");
+    var field = Core__Option.getExn(fields[i], "[FormBuilder.make_form]" + ("Field on index " + String(i) + " should not be None"));
     await make_field(form, field);
   }
   make_submit_button(form, "Enviar");

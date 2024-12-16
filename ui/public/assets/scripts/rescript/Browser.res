@@ -10,6 +10,7 @@ open BrowserTypes
 
 @send external appendChild: (element, element) => () = "appendChild"
 @send external removeChild: (element, element) => unit = "removeChild"
+@send external replace: (element, element) => () = "replaceWith"
 @send external prepend: (element, element) => () = "prepend"
 @send external before: (element, element) => () = "before"
 @send external preventDefault: (event) => unit = "preventDefault"
@@ -86,6 +87,8 @@ let clearChildren = (parent: element) => {
 
 let listen = (element, event, function: event => promise<'a>) => addEventListener(element, event, function)
 
+let changeListen = (element, function: event => promise<'a>) => addEventListener(element, "change", function)
+
 let submitListen = (element, function: event => promise<'a>) => addEventListener(element, "submit", function)
 
 let listenFromWindow = (window, event, function: event => promise<'a>) =>
@@ -97,4 +100,3 @@ let retrieve = (key: string): option<string> => {
 
 let store = (key: string, contents: string): () => putInStorage(storage, key, contents)
 let makeElement = (element: string): element => createElement(doc, element)
-

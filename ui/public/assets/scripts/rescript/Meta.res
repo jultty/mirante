@@ -86,7 +86,7 @@ type entity_schema = {
   exercise_set: entity,
   exercise: entity,
   option: entity,
-  response?: entity,
+  response: entity,
   account?: entity,
   version?: entity,
   metric?: entity,
@@ -299,6 +299,15 @@ let schema: schema = {
           ],
         },
       }
+    },
+    response: {
+      slug: "response",
+      display_name: "resposta",
+      plural_display_name: "respostas",
+      view: {
+        table: { headers: [], },
+        form: { fields: [], },
+      },
     },
   }
 }

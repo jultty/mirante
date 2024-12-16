@@ -100,7 +100,8 @@ let make_form = async (fields: array<field>, id: string): element => {
   for i in 0 to Array.length(fields) - 1 {
 
     let field = Option.getExn(fields[i],
-      ~message=`[FormBuilder.make_form] Field on index ${string_of_int(i)} should not be None`)
+      ~message=`[FormBuilder.make_form]` ++
+      `Field on index ${string_of_int(i)} should not be None`)
 
     await make_field(form, field)
   }

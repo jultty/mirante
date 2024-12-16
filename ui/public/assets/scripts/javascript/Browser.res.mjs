@@ -53,6 +53,10 @@ function listen(element, $$event, $$function) {
   element.addEventListener($$event, $$function);
 }
 
+function changeListen(element, $$function) {
+  element.addEventListener("change", $$function);
+}
+
 function submitListen(element, $$function) {
   element.addEventListener("submit", $$function);
 }
@@ -82,6 +86,7 @@ export {
   getElementByTag ,
   clearChildren ,
   listen ,
+  changeListen ,
   submitListen ,
   listenFromWindow ,
   retrieve ,
