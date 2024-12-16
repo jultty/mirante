@@ -77,7 +77,7 @@ var schema_entity = {
   },
   exercise: {
     slug: "exercise",
-    display_name: "exercícios",
+    display_name: "exercício",
     plural_display_name: "exercícios",
     view: {
       table: {
@@ -94,10 +94,14 @@ var schema_entity = {
             label: "Instrução"
           },
           {
-            id: "exercise_set",
+            id: "set",
             type: "select",
             label: "Conjunto",
-            options: []
+            options: {
+              reference: "exercise_set",
+              display_field: "name",
+              array: []
+            }
           }
         ]
       }

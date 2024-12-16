@@ -7,12 +7,18 @@ type table = {
   headers: array<string>,
 }
 
+type options = {
+  reference?: string,
+  display_field: string,
+  array?: array<string>,
+}
+
 type field = {
   id: string,
   @as("type") kind: string,
   text?: string,
   label?: string,
-  options?: array<string>
+  options?: options
 }
 
 type form = {
@@ -167,7 +173,7 @@ let schema: schema = {
       }
     },
     exercise: {
-      display_name: "exercícios",
+      display_name: "exercício",
       plural_display_name: "exercícios",
       slug: "exercise",
       view: {
@@ -179,9 +185,14 @@ let schema: schema = {
             { label: "Instrução", id: "instruction", kind: "text" },
             {
               label: "Conjunto",
-              id: "exercise_set",
+              id: "set",
               kind: "select",
-              options: [],
+              options: {
+                reference: "exercise_set",
+                // what column in the foreign table should be used as a display name
+                display_field: "name",
+                array: [],
+              },
             },
           ],
         },
