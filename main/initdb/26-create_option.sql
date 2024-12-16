@@ -11,3 +11,19 @@ create table mirante.option (
   creation_user name not null default current_user,
   enabled boolean not null default true
 );
+
+grant select, insert, update, delete on mirante.option to base_user;
+
+alter table mirante.option enable row level security;
+
+create policy option_policy_select on mirante.option for select
+using (creation_user = current_user);
+
+create policy option_policy_update on mirante.option for update
+using (creation_user = current_user);
+
+create policy option_policy_delete on mirante.option for delete
+using (creation_user = current_user);
+
+create policy option_policy_insert on mirante.option for insert
+to base_user with check (true);

@@ -5,6 +5,21 @@ create table mirante.response (
   place int,
 
   creation_date timestamptz not null default now(),
-  creation_user name not null default current_user,
-  enabled boolean not null default true
+  creation_user name not null default current_user
 );
+
+grant select, insert, update, delete on mirante.response to base_user;
+
+alter table mirante.response enable row level security;
+
+create policy response_policy_select on mirante.response for select
+using (creation_user = current_user);
+
+create policy response_policy_update on mirante.response for update
+using (creation_user = current_user);
+
+create policy response_policy_delete on mirante.response for delete
+using (creation_user = current_user);
+
+create policy response_policy_insert on mirante.response for insert
+to base_user with check (true);
