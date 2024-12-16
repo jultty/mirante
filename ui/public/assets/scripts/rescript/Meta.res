@@ -2,15 +2,24 @@
 
 // Entity display
 
-type table = {
-  title?: string,
-  headers: array<string>,
-}
-
-type options = {
+type relation_details = {
   reference?: string,
   display_field: string,
   array?: array<string>,
+}
+
+type column_kind = ForeignString | Boolean
+
+type table_column = {
+  display_name: string,
+  kind: column_kind,
+  options: relation_details,
+}
+
+type table = {
+  title?: string,
+  headers: array<string>,
+  columns?: array<table_column>,
 }
 
 type field = {
@@ -18,7 +27,7 @@ type field = {
   @as("type") kind: string,
   text?: string,
   label?: string,
-  options?: options
+  relation_details?: relation_details
 }
 
 type form = {
@@ -54,7 +63,7 @@ type concrete_entity = {
   @as("id") database_id: string,
   name?: string,
   instruction?: string,
-  exercise_set?: int,
+  set?: int,
 }
 
 type course = {
@@ -174,7 +183,7 @@ let schema: schema = {
             label: "Curso",
             id: "course",
             kind: "select",
-            options: {
+            relation_details: {
               reference: "course",
               display_field: "name",
               array: [],
@@ -190,7 +199,18 @@ let schema: schema = {
       slug: "exercise",
       view: {
         table: {
-          headers: [ "Instrução", "Conjunto", ]
+          headers: [ "Instrução", "Conjunto", ],
+          columns: [
+          {
+            display_name: "Conjunto",
+            kind: ForeignString,
+            options: {
+              display_field: "name",
+              reference: "exercise_set",
+              array: [],
+            }
+          }
+          ],
         },
         form: {
           fields: [
@@ -199,7 +219,7 @@ let schema: schema = {
               label: "Conjunto",
               id: "set",
               kind: "select",
-              options: {
+              relation_details: {
                 reference: "exercise_set",
                 display_field: "name",
                 array: [],

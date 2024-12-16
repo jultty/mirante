@@ -65,3 +65,8 @@ type http_options = {
   },
   body?: string,
 }
+
+@val @scope("globalThis")
+external fetchRelated: (string, 'params) =>
+  promise<Response.t<array<'a>, _, _>> = "fetch"
+

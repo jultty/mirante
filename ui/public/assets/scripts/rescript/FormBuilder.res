@@ -3,10 +3,6 @@ open Browser
 
 type field = Meta.field
 
-@val @scope("globalThis")
-external fetchRelated: (string, 'params) =>
-  promise<BrowserTypes.Response.t<array<'a>, _, _>> = "fetch"
-
 let make_field = async (form, field: field) => {
 
   let label = makeElement("label")
@@ -18,10 +14,10 @@ let make_field = async (form, field: field) => {
 
   if field.kind == "select" {
 
-    let options = Option.getExn(field.options,
-      ~message=`[FormBuilder.make_field] Options not defined for select field ${field.id}`)
+    let relation_details = Option.getExn(field.relation_details,
+      ~message=`[FormBuilder.make_field] Details not defined for select field ${field.id}`)
 
-    let reference = Option.getExn(options.reference,
+    let reference = Option.getExn(relation_details.reference,
       ~message=`[FormBuilder.make_field] Reference not defined for select field ${field.id}`)
 
     let get_options = Auth.make_get_options()

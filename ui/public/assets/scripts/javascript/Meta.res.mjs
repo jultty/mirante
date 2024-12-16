@@ -77,7 +77,7 @@ var schema_entity = {
             id: "course",
             type: "select",
             label: "Curso",
-            options: {
+            relation_details: {
               reference: "course",
               display_field: "name",
               array: []
@@ -96,7 +96,16 @@ var schema_entity = {
         headers: [
           "Instrução",
           "Conjunto"
-        ]
+        ],
+        columns: [{
+            display_name: "Conjunto",
+            kind: "ForeignString",
+            options: {
+              reference: "exercise_set",
+              display_field: "name",
+              array: []
+            }
+          }]
       },
       form: {
         fields: [
@@ -109,7 +118,7 @@ var schema_entity = {
             id: "set",
             type: "select",
             label: "Conjunto",
-            options: {
+            relation_details: {
               reference: "exercise_set",
               display_field: "name",
               array: []

@@ -1,4 +1,5 @@
 open Browser
+open BrowserTypes
 
 // Page structure
 
@@ -102,7 +103,11 @@ let update_table = async (entity: Meta.entity): () => {
   | None => []
   }
 
-  Array.forEach(array, element => {
+  for i in 0 to Array.length(array) - 1 {
+
+    let element = Option.getExn(array[i],
+    ~message=`[View.update_table]
+      Element on index ${string_of_int(i)} should not be None`)
 
     let row = makeElement("tr")
 
@@ -126,18 +131,64 @@ let update_table = async (entity: Meta.entity): () => {
     name_cell.innerText = Some(name)
     appendChild(row, name_cell)
 
+    //
+
+    if Option.isSome(entity.view.table.columns) {
+
+      let columns = Option.getExn(entity.view.table.columns) // as checked above
+
+      for i in 0 to Array.length(columns) - 1 {
+
+        let column = Option.getExn(columns[i],
+          ~message=`[View.update_table]
+          Column on index ${string_of_int(i)} should not be None`)
+
+        // Still adding kinds
+        // Done: ForeignString
+
+        if column.kind == ForeignString {
+
+          let reference = Option.getExn(column.options.reference,
+            ~message=`[View.update_table]
+            Reference not defined for ForeignString column ${column.display_name}`)
+
+          // TODO abstract further
+          let object_of_record = (record: Meta.concrete_entity) => {
+            Console.log(record)
+            Option.getExn(record.set)
+          }
+
+          // TODO abstract further
+          let relation_id = object_of_record(element)
+
+          let get_options = Auth.make_get_options()
+
+          let related = await fetchRelated(
+            Meta.schema.system.constants.root_url ++ "/" ++ reference ++ "?id=eq." ++ string_of_int(relation_id), get_options)
+          let array = await related->Response.json
+
+          let found_relation = Option.getExn(array[0], ~message=`[View.update_table] First element in related response array not found`)
+
+          let cell = makeElement("td")
+          cell.innerText = found_relation.name
+          appendChild(row, cell)
+
+        }
+      }
+    }
+
+    //
+
     let edit_cell = makeElement("td")
     let edit_button = makeElement("button")
     edit_button.innerText = Some("Editar")
-    edit_button.id =
-      Some(`${entity.slug}_${element.database_id}_edit_button`)
+    edit_button.id = Some(`${entity.slug}_${element.database_id}_edit_button`)
     edit_button.class = Some("edit_row_button")
     appendChild(edit_cell, edit_button)
     appendChild(row, edit_cell)
 
     appendChild(table, row)
-  })
-
+  }
 }
 
 // Creation form

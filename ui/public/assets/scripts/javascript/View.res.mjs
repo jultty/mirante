@@ -74,29 +74,52 @@ async function update_table(entity) {
   response_store.array = await response.json();
   var found_array = response_store.array;
   var array = found_array !== undefined ? found_array : [];
-  array.forEach(function (element) {
-        var row = Browser.makeElement("tr");
-        var checkbox_cell = Browser.makeElement("td");
-        var checkbox = Browser.makeElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = entity.slug + "_" + element.id + "_checkbox";
-        checkbox.class = "select_row_checkbox";
-        checkbox_cell.appendChild(checkbox);
-        row.appendChild(checkbox_cell);
-        var name = Core__Option.getOr(element.name, Core__Option.getOr(element.instruction, "Item sem nome"));
-        var name$1 = name.length > 70 ? name.slice(0, 70) + "..." : name;
-        var name_cell = Browser.makeElement("td");
-        name_cell.innerText = name$1;
-        row.appendChild(name_cell);
-        var edit_cell = Browser.makeElement("td");
-        var edit_button = Browser.makeElement("button");
-        edit_button.innerText = "Editar";
-        edit_button.id = entity.slug + "_" + element.id + "_edit_button";
-        edit_button.class = "edit_row_button";
-        edit_cell.appendChild(edit_button);
-        row.appendChild(edit_cell);
-        table.appendChild(row);
-      });
+  for(var i = 0 ,i_finish = array.length; i < i_finish; ++i){
+    var element = Core__Option.getExn(array[i], "[View.update_table]\n      Element on index " + String(i) + " should not be None");
+    var row = Browser.makeElement("tr");
+    var checkbox_cell = Browser.makeElement("td");
+    var checkbox = Browser.makeElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = entity.slug + "_" + element.id + "_checkbox";
+    checkbox.class = "select_row_checkbox";
+    checkbox_cell.appendChild(checkbox);
+    row.appendChild(checkbox_cell);
+    var name = Core__Option.getOr(element.name, Core__Option.getOr(element.instruction, "Item sem nome"));
+    var name$1 = name.length > 70 ? name.slice(0, 70) + "..." : name;
+    var name_cell = Browser.makeElement("td");
+    name_cell.innerText = name$1;
+    row.appendChild(name_cell);
+    if (Core__Option.isSome(entity.view.table.columns)) {
+      var columns = Core__Option.getExn(entity.view.table.columns, undefined);
+      for(var i$1 = 0 ,i_finish$1 = columns.length; i$1 < i_finish$1; ++i$1){
+        var column = Core__Option.getExn(columns[i$1], "[View.update_table]\n          Column on index " + String(i$1) + " should not be None");
+        if (column.kind === "ForeignString") {
+          var reference = Core__Option.getExn(column.options.reference, "[View.update_table]\n            Reference not defined for ForeignString column " + column.display_name);
+          var object_of_record = function (record) {
+            console.log(record);
+            return Core__Option.getExn(record.set, undefined);
+          };
+          var relation_id = object_of_record(element);
+          var get_options$1 = Auth.make_get_options();
+          var related = await globalThis.fetch(Meta.schema.system.constants.root_url + "/" + reference + "?id=eq." + String(relation_id), get_options$1);
+          var array$1 = await related.json();
+          var found_relation = Core__Option.getExn(array$1[0], "[View.update_table] First element in related response array not found");
+          var cell = Browser.makeElement("td");
+          cell.innerText = found_relation.name;
+          row.appendChild(cell);
+        }
+        
+      }
+    }
+    var edit_cell = Browser.makeElement("td");
+    var edit_button = Browser.makeElement("button");
+    edit_button.innerText = "Editar";
+    edit_button.id = entity.slug + "_" + element.id + "_edit_button";
+    edit_button.class = "edit_row_button";
+    edit_cell.appendChild(edit_button);
+    row.appendChild(edit_cell);
+    table.appendChild(row);
+  }
 }
 
 async function make_creation_form(entity) {

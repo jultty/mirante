@@ -12,8 +12,8 @@ async function make_field(form, field) {
   form.appendChild(label);
   form.appendChild(Browser.makeElement("br"));
   if (field.type === "select") {
-    var options = Core__Option.getExn(field.options, "[FormBuilder.make_field] Options not defined for select field " + field.id);
-    var reference = Core__Option.getExn(options.reference, "[FormBuilder.make_field] Reference not defined for select field " + field.id);
+    var relation_details = Core__Option.getExn(field.relation_details, "[FormBuilder.make_field] Details not defined for select field " + field.id);
+    var reference = Core__Option.getExn(relation_details.reference, "[FormBuilder.make_field] Reference not defined for select field " + field.id);
     var get_options = Auth.make_get_options();
     var related = await globalThis.fetch(Meta.schema.system.constants.root_url + "/" + reference, get_options);
     var array = await related.json();
