@@ -114,8 +114,16 @@ let update_table = async (entity: Meta.entity): () => {
     appendChild(checkbox_cell, checkbox)
     appendChild(row, checkbox_cell)
 
+    let name = Option.getOr(element.name, Option.getOr(
+        element.instruction, "Item sem nome")
+    )
+
+    let name = if String.length(name) > 70 {
+      String.slice(name, ~start=0, ~end=70) ++ "..."
+    } else { name }
+
     let name_cell = makeElement("td")
-    name_cell.innerText = Some(Option.getOr(element.name, "Item sem nome"))
+    name_cell.innerText = Some(name)
     appendChild(row, name_cell)
 
     let edit_cell = makeElement("td")

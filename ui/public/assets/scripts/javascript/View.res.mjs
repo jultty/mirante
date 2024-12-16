@@ -83,8 +83,10 @@ async function update_table(entity) {
         checkbox.class = "select_row_checkbox";
         checkbox_cell.appendChild(checkbox);
         row.appendChild(checkbox_cell);
+        var name = Core__Option.getOr(element.name, Core__Option.getOr(element.instruction, "Item sem nome"));
+        var name$1 = name.length > 70 ? name.slice(0, 70) + "..." : name;
         var name_cell = Browser.makeElement("td");
-        name_cell.innerText = Core__Option.getOr(element.name, "Item sem nome");
+        name_cell.innerText = name$1;
         row.appendChild(name_cell);
         var edit_cell = Browser.makeElement("td");
         var edit_button = Browser.makeElement("button");
