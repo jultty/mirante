@@ -47,6 +47,7 @@ type response_body = {
   status?: int,
   email?: string,
   token?: string,
+  json?: JSON.t,
   __client_error?: string,
 }
 
@@ -54,4 +55,13 @@ type response_store<'a> = {
   mutable response?: response,
   mutable json?: response_body,
   mutable array?: array<'a>
+}
+
+type http_options = {
+  method: string,
+  headers: {
+    "Content-Type": string,
+    "Authorization": string,
+  },
+  body?: string,
 }

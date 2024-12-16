@@ -26,8 +26,30 @@ function getCredentials() {
   return JSON.parse(tmp);
 }
 
+function make_get_options() {
+  var credentials = getCredentialsOption();
+  var credentials$1;
+  if (credentials !== undefined) {
+    credentials$1 = credentials;
+  } else {
+    throw {
+          RE_EXN_ID: Browser.CredentialsNotFound,
+          _1: "[Auth.make_get_options] Can't assemble, credentials not found in store ",
+          Error: new Error()
+        };
+  }
+  return {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + credentials$1.token
+          }
+        };
+}
+
 export {
   getCredentialsOption ,
   getCredentials ,
+  make_get_options ,
 }
 /* No side effect */
