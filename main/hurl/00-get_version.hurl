@@ -10,7 +10,7 @@ jsonpath "$.[0].tag" isString
 jsonpath "$.[0].tag" matches /v\d+\.\d+\.\d+/
 jsonpath "$.[0].deprecated" == false
 jsonpath "$.[0].current" == true
-variable "minor" toInt == 5
+variable "minor" toInt == 6
 
 # client can query the version without authentication
 # and get a single object outside an array if desired
@@ -26,4 +26,4 @@ jsonpath "$.tag" isString
 jsonpath "$.tag" matches /v\d+\.\d+\.\d+/
 jsonpath "$.deprecated" == false
 jsonpath "$.current" == true
-variable "minor" toInt == 5
+variable "minor" toInt == 6

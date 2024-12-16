@@ -30,11 +30,21 @@ header "Content-Type" == "application/json; charset=utf-8"
 jsonpath "$.token" != null
 jsonpath "$.token" matches /.+\..+\..+/
 
+# can create a course with token
+POST http://localhost:3031/course
+Authorization: Bearer {{token}}
+{
+  "name": "Gênero, Raça e Tecnologia"
+}
+
+HTTP 201
+
 # can create an exercise set with token
 POST http://localhost:3031/exercise_set
 Authorization: Bearer {{token}}
 {
-  "name": "Gênero, Raça e Tecnologia"
+  "name": "Leitura: More than a Glitch",
+  "course": 1
 }
 
 HTTP 201

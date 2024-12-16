@@ -31,7 +31,8 @@ jsonpath "$.token" matches /.+\..+\..+/
 POST http://localhost:3031/exercise_set
 Authorization: Bearer {{token}}
 {
-  "name": "Backends Dadocentrados"
+  "name": "Backends Dadocentrados",
+  "course": 1
 }
 
 HTTP 201

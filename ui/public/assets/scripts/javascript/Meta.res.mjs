@@ -4,13 +4,13 @@ import * as Caml_exceptions from "rescript/lib/es6/caml_exceptions.js";
 
 var client_version = {
   major: 0,
-  minor: 1,
+  minor: 2,
   patch: 0
 };
 
 var server_version = {
   major: 0,
-  minor: 5,
+  minor: 6,
   patch: 0
 };
 
