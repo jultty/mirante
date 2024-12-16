@@ -2,8 +2,7 @@
 
 type version = { tag: string, error: string }
 
-type credentials = { email: string, token: string }
-@scope("JSON") @val external parseCredentials: string => credentials = "parse"
+type credentials = AuthTypes.credentials
 
 type status = {
   mutable version: string,

@@ -40,7 +40,7 @@ let signup_handler = async (event) => {
 
   dialog.innerText = Some("")
 
-  let form_data = Auth.parseForm(object, Auth.parseFields(signup_form))
+  let form_data = parseForm(object, parseFields(signup_form))
 
   let post_options = {
     "method": "POST",
@@ -94,7 +94,7 @@ let signup_handler = async (event) => {
         let token = Option.getExn(json.token,
           ~message="[Signup.token] Destructuring error")
 
-        let credentials: Auth.credentials = { user_email: email, user_token: token }
+        let credentials: AuthTypes.credentials = { user_email: email, user_token: token }
 
         let credentials_stringified: string =
           Option.getExn(JSON.stringifyAny(credentials))

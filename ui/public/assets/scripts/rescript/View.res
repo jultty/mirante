@@ -1,5 +1,4 @@
 open Browser
-open Auth
 
 // Page structure
 

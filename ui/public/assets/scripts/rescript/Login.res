@@ -1,6 +1,5 @@
 open BrowserTypes
 open Browser
-open Auth
 
 // Populate form
 
@@ -86,8 +85,8 @@ let login_handler = async (event) => {
         let token = Option.getExn(json.token,
           ~message="[Login.token] Destructuring error")
 
-        let credentials: credentials = {
-          user_email: form_data["email"],
+        let credentials: AuthTypes.credentials = {
+          user_email: form_data.user_email,
           user_token: token
         }
 
