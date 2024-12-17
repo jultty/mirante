@@ -101,7 +101,7 @@ async function submit_handler($$event) {
               Error: new Error()
             };
       }
-      dialog.innerText = "Precisão: " + metrics.accuracy.index.toString() + (" (" + metrics.accuracy.correct.toString() + " corretas /") + (" " + metrics.accuracy.total.toString() + " total)") + ("\nAssiduidade: " + metrics.assiduity.index.toPrecision(3)) + (" (intensidade " + metrics.assiduity.intensity.toPrecision(2)) + (" + distribuição " + metrics.assiduity.spread.toPrecision(2) + ")") + "\nPesos: Intensidade = 25%, Distribuição = 75%\n" + metrics.assiduity.days_with_responses.toFixed(1) + " dias com respostas de um total de " + (metrics.assiduity.total_days.toFixed(1) + " dias.") + (
+      dialog.innerText = "Precisão: " + metrics.accuracy.index.toFixed(3) + (" (" + metrics.accuracy.correct.toString() + " corretas /") + (" " + metrics.accuracy.total.toString() + " total)") + ("\nAssiduidade: " + metrics.assiduity.index.toPrecision(3)) + (" (intensidade " + metrics.assiduity.intensity.toPrecision(2)) + (" + distribuição " + metrics.assiduity.spread.toPrecision(2) + ")") + "\nPesos: Intensidade = 25%, Distribuição = 75%\n" + metrics.assiduity.days_with_responses.toFixed(1) + " dias com respostas de um total de " + (metrics.assiduity.total_days.toFixed(1) + " dias.") + (
         metrics.assiduity.total_days < 30.0 ? "\nAtenção: O intervalo é curto demais para ser significativo!" : ""
       );
       return ;

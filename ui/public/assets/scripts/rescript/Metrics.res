@@ -102,7 +102,7 @@ let submit_handler = async (event) => {
           "200 rpc/metrics response does not contain a metrics object"))
       }
       dialog.innerText = Some(
-        `Precisão: ${Float.toString(metrics.accuracy.index)}` ++
+        `Precisão: ${Float.toFixed(metrics.accuracy.index, ~digits=3)}` ++
         ` (${Float.toString(metrics.accuracy.correct)} corretas /` ++
         ` ${Float.toString(metrics.accuracy.total)} total)` ++
         `\nAssiduidade: ${Float.toPrecision(metrics.assiduity.index, ~digits=3)}` ++
