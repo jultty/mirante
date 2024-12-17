@@ -223,6 +223,19 @@ var schema_entity = {
         fields: []
       }
     }
+  },
+  metric: {
+    slug: "metric",
+    display_name: "métrica",
+    plural_display_name: "métricas",
+    view: {
+      table: {
+        headers: []
+      },
+      form: {
+        fields: []
+      }
+    }
   }
 };
 

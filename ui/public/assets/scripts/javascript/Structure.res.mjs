@@ -5,6 +5,7 @@ import * as View from "./View.res.mjs";
 import * as Login from "./Login.res.mjs";
 import * as Signup from "./Signup.res.mjs";
 import * as Browser from "./Browser.res.mjs";
+import * as Metrics from "./Metrics.res.mjs";
 import * as Responder from "./Responder.res.mjs";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
 
@@ -44,6 +45,10 @@ function create_menu() {
     {
       name: "Responder",
       handler: Responder.structure
+    },
+    {
+      name: "Métricas",
+      handler: Metrics.structure
     }
   ];
   var menu = Browser.makeElement("nav");

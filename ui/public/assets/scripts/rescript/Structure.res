@@ -19,6 +19,7 @@ let create_menu = () => {
     { name: "Exercícios", handler: View.make_nav_handler(entities.exercise) },
     { name: "Alternativas", handler: View.make_nav_handler(entities.option) },
     { name: "Responder", handler: Responder.structure },
+    { name: "Métricas", handler: Metrics.structure },
   ]
 
   let menu = makeElement("nav")

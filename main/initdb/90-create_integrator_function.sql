@@ -37,11 +37,6 @@ $$ language plpgsql security definer;
 revoke all privileges on function rgpet(text) from public;
 grant execute on function rgpet(text) to integrator;
 
--- INSERT INTO films (code, title, did, date_prod, kind) VALUES
---     ('B6717', 'Tampopo', 110, '1985-02-10', 'Comedy'),
---     ('HG120', 'The Dinner Game', 140, DEFAULT, 'Comedy');
---
-
 create role "user@mirante.example";
 create role "teste@mirante.example";
 create role "teste2@mirante.example";
