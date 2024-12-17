@@ -43,6 +43,7 @@ external fetch: (string, 'params) =>
 
 exception ElementNotFound(string)
 exception CredentialsNotFound(string)
+exception UnexpectedResponseStructure(string)
 
 // Helper functions
 

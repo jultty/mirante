@@ -47,18 +47,40 @@ type response = {
   __client_error?: string,
 }
 
+type accuracy_metric = {
+  index: float,
+  correct: float,
+  total: float,
+}
+
+type assiduity_metric = {
+  index: float,
+  spread: float,
+  intensity: float,
+  days_with_responses: float,
+  total_days: float,
+}
+
+type metrics = {
+  accuracy: accuracy_metric,
+  assiduity: assiduity_metric,
+}
+
 type response_body = {
   status?: int,
   email?: string,
   token?: string,
   json?: JSON.t,
   __client_error?: string,
+  code?: string,
+  message?: string,
+  metrics?: metrics,
 }
 
 type response_store<'a> = {
   mutable response?: response,
   mutable json?: response_body,
-  mutable array?: array<'a>
+  mutable array?: array<'a>,
 }
 
 type http_options = {

@@ -8,6 +8,8 @@ var ElementNotFound = /* @__PURE__ */Caml_exceptions.create("Browser.ElementNotF
 
 var CredentialsNotFound = /* @__PURE__ */Caml_exceptions.create("Browser.CredentialsNotFound");
 
+var UnexpectedResponseStructure = /* @__PURE__ */Caml_exceptions.create("Browser.UnexpectedResponseStructure");
+
 function getBody() {
   return Core__Option.getExn(document.getElementsByTagName("body")[0], "body not found");
 }
@@ -80,6 +82,7 @@ function makeElement(element) {
 export {
   ElementNotFound ,
   CredentialsNotFound ,
+  UnexpectedResponseStructure ,
   getBody ,
   getElement ,
   getElementsByTag ,

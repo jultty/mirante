@@ -52,7 +52,8 @@ begin
 
 end
 
-$$ language plpgsql immutable;
+$$ language plpgsql security invoker immutable;
 
-revoke all privileges on function mirante.metrics(timestamptz, timestamptz) from public;
-grant execute on function mirante.metrics(timestamptz, timestamptz) to base_user;
+revoke all privileges on function metrics(timestamptz, timestamptz) from public;
+grant execute on function metrics(timestamptz, timestamptz) to base_user;
+grant execute on function metrics(timestamptz, timestamptz) to authenticator;

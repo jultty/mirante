@@ -8,12 +8,12 @@ let populate_form = async () => {
 
   let fields: array<FormBuilder.field> = [
     {
-      id: "from",
+      id: "period_from",
       kind: "date",
       label: "Data de início:",
     },
     {
-      id: "to",
+      id: "period_to",
       kind: "date",
       label: "Data final:",
     },
@@ -44,12 +44,19 @@ let submit_handler = async (event) => {
   let form_data = parseForm(object, parseFields(metrics_form))
   Console.log(form_data)
 
+  let token = Auth.getCredentials().user_token
+
   let post_options = {
     "method": "POST",
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`,
+  },
     "body": JSON.stringifyAny(form_data),
   }
 
+
+    Console.log(post_options)
    let response_store: BrowserTypes.response_store<'a> = {}
 
    try {
@@ -81,13 +88,41 @@ let submit_handler = async (event) => {
 
     switch status {
     | 400 | 403 => {
-      dialog.innerText =
-      Some("Requisição inválida. Os dados informados estão corretos?")
+      switch response_store.json {
+      | Some({ code: "P0001", message: "Nenhuma resposta encontrada no período", _ }) =>
+        dialog.innerText = Some("Nenhuma resposta encontrada no período especificado")
+      | _ => dialog.innerText =
+        Some("Requisição inválida. Os dados informados estão corretos?")
+      }
     }
-    | 200 => dialog.innerText = Some("Métrica calculada com sucesso")
+    | 200 => {
+      let metrics = switch response_store.json {
+        | Some({ metrics: metrics, _ }) => metrics
+        | _ => raise (Browser.UnexpectedResponseStructure(
+          "200 rpc/metrics response does not contain a metrics object"))
+      }
+      dialog.innerText = Some(
+        `Precisão: ${Float.toString(metrics.accuracy.index)}` ++
+        ` (${Float.toString(metrics.accuracy.correct)} corretas /` ++
+        ` ${Float.toString(metrics.accuracy.total)} total)` ++
+        `\nAssiduidade: ${Float.toPrecision(metrics.assiduity.index, ~digits=3)}` ++
+        ` (intensidade ${Float.toPrecision(metrics.assiduity.intensity, ~digits=2)}` ++
+        ` + distribuição ${Float.toPrecision(metrics.assiduity.spread, ~digits=2)})` ++
+        `\nPesos: Intensidade = 25%, Distribuição = 75%\n` ++
+        Float.toFixed(metrics.assiduity.days_with_responses, ~digits=1) ++
+        ` dias com respostas de um total de ` ++
+        `${Float.toFixed(metrics.assiduity.total_days, ~digits=1)} dias.` ++
+        if metrics.assiduity.total_days < 30.0 {
+          `\nAtenção: O intervalo é curto demais para ser significativo!` }  else { `` }
+
+
+      )
+
+    }
     | 201 => dialog.innerText = Some("Métrica calculada e armazenada com sucesso")
     | value => Console.log(`Unexpected return status ${Int.toString(value)}`)
     }
+
   } catch {
      | error => {
        Console.log(error)
